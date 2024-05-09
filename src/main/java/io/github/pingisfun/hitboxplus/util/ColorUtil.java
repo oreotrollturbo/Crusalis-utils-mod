@@ -20,23 +20,49 @@ import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.scoreboard.AbstractTeam;
+import net.minecraft.text.Text;
 
 import java.awt.*;
 
+import static io.github.pingisfun.hitboxplus.HitboxPlus.displayCustomMessage;
+
 public class ColorUtil {
+
+    public static AbstractTeam userTeam;
+
     public static Color getEntityColor(Entity entity) {
         ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
         if (entity instanceof PlayerEntity && config.isPlayerConfigEnabled) {
             if (entity instanceof ClientPlayerEntity) {
+                userTeam = entity.getScoreboardTeam();
                 return ColorUtil.decode(config.self.color, config.self.alpha);
-            } else if (entity instanceof OtherClientPlayerEntity) {
+            }
+
+
+            else if (entity instanceof OtherClientPlayerEntity) {
                 String username = entity.getName().getString();
+
+                AbstractTeam playerTeam = entity.getScoreboardTeam();
+
+
+                displayCustomMessage(String.valueOf(entity.getScoreboardTeam()));
+                //System.out.println(entity.getScoreboardTeam());
+
+                if (playerTeam == userTeam){
+                    return ColorUtil.decode(config.friend.color, config.friend.alpha);
+                }
                 if (config.friend.list.contains((username))) {
                     return ColorUtil.decode(config.friend.color, config.friend.alpha);
-                } else if (config.enemy.list.contains((username))) {
+                }
+
+                else if (config.enemy.list.contains((username))) {
                     return ColorUtil.decode(config.enemy.color, config.enemy.alpha);
-                } else {
+                }
+
+
+                else {
                     return ColorUtil.decode(config.neutral.color, config.neutral.alpha);
                 }
             }
@@ -111,4 +137,6 @@ public class ColorUtil {
         return entity instanceof AreaEffectCloudEntity || entity instanceof ExperienceOrbEntity || entity instanceof EyeOfEnderEntity || entity instanceof FallingBlockEntity || entity instanceof ItemEntity || entity instanceof TntEntity || entity instanceof EndCrystalEntity;
 
     }
+
+
 }
