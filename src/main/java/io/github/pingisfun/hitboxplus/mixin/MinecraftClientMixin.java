@@ -1,22 +1,32 @@
 package io.github.pingisfun.hitboxplus.mixin;
 
+import io.github.pingisfun.hitboxplus.HitboxPlus;
 import io.github.pingisfun.hitboxplus.ModConfig;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Objects;
+
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
+
+
     @Inject(at = @At("HEAD"), method = "doItemPick")
     private void toggleHostility(CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
+
         if (!client.getEntityRenderDispatcher().shouldRenderHitboxes()) {
             return;
         }
@@ -57,5 +67,43 @@ public abstract class MinecraftClientMixin {
         }
 
     }
+
+//    @Inject(
+//            method = "doAttack",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z"
+//            ),
+//            cancellable = true
+//    )
+//    private void dontAttackTeammates(CallbackInfoReturnable<Boolean> cir) {
+//        ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+//        HitResult crosshairTarget = ((MinecraftClient) (Object) this).crosshairTarget;
+//
+//        if (
+//                crosshairTarget != null
+//                        && crosshairTarget.getType() == HitResult.Type.ENTITY
+//                        && ((EntityHitResult) crosshairTarget).getEntity() instanceof OtherClientPlayerEntity p
+//
+//        ){
+//            OtherClientPlayerEntity otherPlayer = (OtherClientPlayerEntity) ((EntityHitResult) crosshairTarget).getEntity();
+//
+//
+//
+//            if (config.protectedPlayers && isProtected(otherPlayer)){
+//                cir.setReturnValue(false);
+//            }
+//
+//        }
+//    }
+
+//    @Unique
+//    public boolean isProtected (OtherClientPlayerEntity player){
+//        ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
+//
+//        assert MinecraftClient.getInstance().player != null;
+//        return (MinecraftClient.getInstance().player.isTeammate(player)) || (config.friendteam.prefixlist.contains(Objects.requireNonNull(player.getScoreboardTeam()).getName()));
+//
+//    }
 
 }

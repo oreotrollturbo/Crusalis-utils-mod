@@ -2,6 +2,7 @@ package io.github.pingisfun.hitboxplus.util;
 
 import io.github.pingisfun.hitboxplus.ModConfig;
 import me.shedaniel.autoconfig.AutoConfig;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.entity.*;
@@ -20,45 +21,50 @@ import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.scoreboard.AbstractTeam;
-import net.minecraft.text.Text;
 
 import java.awt.*;
 
-import static io.github.pingisfun.hitboxplus.HitboxPlus.displayCustomMessage;
 
 public class ColorUtil {
 
-    public static AbstractTeam userTeam;
+    private static final ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
 
     public static Color getEntityColor(Entity entity) {
         ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
+
         if (entity instanceof PlayerEntity && config.isPlayerConfigEnabled) {
             if (entity instanceof ClientPlayerEntity) {
-                userTeam = entity.getScoreboardTeam();
                 return ColorUtil.decode(config.self.color, config.self.alpha);
             }
 
-
             else if (entity instanceof OtherClientPlayerEntity) {
+                assert player != null;
+
+
                 String username = entity.getName().getString();
 
-                AbstractTeam playerTeam = entity.getScoreboardTeam();
 
-
-                displayCustomMessage(String.valueOf(entity.getScoreboardTeam()));
-                //System.out.println(entity.getScoreboardTeam());
-
-                if (playerTeam == userTeam){
+                if (player.isTeammate(entity)){
                     return ColorUtil.decode(config.friend.color, config.friend.alpha);
                 }
-                if (config.friend.list.contains((username))) {
+                else if (config.friend.list.contains((username))) {
                     return ColorUtil.decode(config.friend.color, config.friend.alpha);
                 }
-
                 else if (config.enemy.list.contains((username))) {
                     return ColorUtil.decode(config.enemy.color, config.enemy.alpha);
+                }
+
+                if (entity.getScoreboardTeam() != null){
+                    String teamName = entity.getScoreboardTeam().getName();
+
+                    if (config.friendteam.oreolist.contains(teamName)){ //these check for the players team
+                        return ColorUtil.decode(config.friend.color, config.friend.alpha);
+                    }
+                    else if (config.enemyteam.oreolist.contains(teamName)){ //They are independent if statements so that if someone is marked as an enemy while being in a friendly team he is still marked red
+                        return ColorUtil.decode(config.enemy.color, config.enemy.alpha);
+                    }
                 }
 
 

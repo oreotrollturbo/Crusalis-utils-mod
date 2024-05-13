@@ -33,6 +33,7 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category(value = "players")
     public boolean isPlayerConfigEnabled = false;
 
+
     @ConfigEntry.Category(value = "players")
     @ConfigEntry.Gui.CollapsibleObject
     public PlayerListConfig friend = new PlayerListConfig(0x20FF00);
@@ -76,6 +77,27 @@ public class ModConfig implements ConfigData {
     @ConfigEntry.Category(value = "entity")
     @ConfigEntry.Gui.CollapsibleObject
     public MiscEntityDropdown misc = new MiscEntityDropdown();
+
+    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Gui.CollapsibleObject
+    public PlayerOreoListConfig friendteam = new PlayerOreoListConfig();
+
+    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Gui.CollapsibleObject
+    public PlayerOreoListConfig enemyteam = new PlayerOreoListConfig();
+
+    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Gui.CollapsibleObject
+    public PlayerOreoListConfig prefix = new PlayerOreoListConfig();
+
+    @ConfigEntry.Category(value = "oreo")
+    @ConfigEntry.Gui.CollapsibleObject
+    public PlayerOreoListConfig towns = new PlayerOreoListConfig();
+
+
+//    @ConfigEntry.Category(value = "prefix")
+//    public boolean protectedPlayers = false;
+
 
     public static class MiscEntityDropdown {
         public boolean isEnabled = false;
@@ -182,5 +204,11 @@ public class ModConfig implements ConfigData {
         @ConfigEntry.BoundedDiscrete(max = 10, min = 0)
         public int alpha = 10;
     }
+
+    public static class PlayerOreoListConfig {
+
+        public List<String> oreolist = new ArrayList<>();
+    }
+
 
 }
