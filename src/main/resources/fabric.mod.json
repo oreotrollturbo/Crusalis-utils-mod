@@ -3,11 +3,15 @@
   "id": "hitboxplus",
   "version": "${version}",
 
-  "name": "HitBox+",
-  "description": "A mod that allows you to change the color of hitboxes.",
+  "name": "HitBox+ oreo",
+  "description": "A modified version of Hitbox+ with a lot of additions for Crusalis Macedonia by oreotrollturbo.",
   "authors": [
-    "PingIsFun",
-    "Modified by oreotrollturbo"
+    "Made by oreotrollturbo"
+  ],
+  "contributors": [
+    "PingIsFun for HitboxPlus",
+    "tsuki",
+    "Error 110"
   ],
   "contact": {
     "sources": "https://github.com/PingIsFun/HitBoxPlus",
@@ -21,6 +25,9 @@
   "entrypoints": {
     "main": [
       "io.github.pingisfun.hitboxplus.HitboxPlus"
+    ],
+    "client": [
+      "io.github.pingisfun.hitboxplus.HitboxPlusClient"
     ],
     "modmenu": [
       "io.github.pingisfun.hitboxplus.integration.ModMenuIntegration"

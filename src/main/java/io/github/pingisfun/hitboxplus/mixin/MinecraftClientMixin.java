@@ -1,22 +1,16 @@
 package io.github.pingisfun.hitboxplus.mixin;
 
-import io.github.pingisfun.hitboxplus.HitboxPlus;
 import io.github.pingisfun.hitboxplus.ModConfig;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.Objects;
 
 
 @Mixin(MinecraftClient.class)
@@ -67,6 +61,11 @@ public abstract class MinecraftClientMixin {
         }
 
     }
+
+
+    //@Inject(at = @At("HEAD"), method = "inGameHud") //This makes it so that you physically cant hit teammates (banned on crusalis)
+
+
 
 //    @Inject(
 //            method = "doAttack",

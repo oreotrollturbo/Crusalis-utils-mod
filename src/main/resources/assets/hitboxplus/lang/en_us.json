@@ -1,5 +1,5 @@
 {
-  "text.autoconfig.hitboxplus.title": "HitBox+",
+  "text.autoconfig.hitboxplus.title": "HitBox+/oreo",
   "text.autoconfig.hitboxplus.category.general": "General",
   "text.autoconfig.hitboxplus.category.players": "Player",
   "text.autoconfig.hitboxplus.category.entity": "Entity",
@@ -115,5 +115,25 @@
   "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and the team name that corresponds to them",
   "text.autoconfig.hitboxplus.option.prefix.oreolist": "Prefix List",
   "text.autoconfig.hitboxplus.option.friendteam.oreolist": "Friendly Teams List",
-  "text.autoconfig.hitboxplus.option.enemyteam.oreolist": "Enemy Teams List"
+  "text.autoconfig.hitboxplus.option.enemyteam.oreolist": "Enemy Teams List",
+
+
+  "text.autoconfig.hitboxplus.option.pingTowns": "§3§l Flag to waypoint options",
+  "text.autoconfig.hitboxplus.option.pingTowns.isPingingEnabled": "Enable flag waypoints",
+  "text.autoconfig.hitboxplus.option.pingTowns.oreoModList": "List of registered friendly towns (for when they get attacked)",
+  "text.autoconfig.hitboxplus.option.pingTowns.enemyTownList": "List of registered enemy towns (for when they get liberated)",
+  "text.autoconfig.hitboxplus.option.pingTowns.yOffset": "Y offset of waypoints",
+  "text.autoconfig.hitboxplus.option.pingTowns.removeCooldown": "Time until attack waypoint deletion (seconds)",
+  "text.autoconfig.hitboxplus.option.pingTowns.liberateRemoveCooldown": "Time until liberate waypoint deletion (seconds)",
+  "text.autoconfig.hitboxplus.option.pingTowns.limitRange": "Limit flag waypoints to a radius",
+  "text.autoconfig.hitboxplus.option.pingTowns.pingDistanceLimit": "Max distance radius (in blocks)",
+
+  "text.autoconfig.hitboxplus.option.specialTowns": "§1§l Special flag sound settings",
+  "text.autoconfig.hitboxplus.option.specialTowns.playFlagSounds": "Play a sound when marked cities are flagged",
+  "text.autoconfig.hitboxplus.option.specialTowns.showNotifications": "Show a notification on chunk capture",
+  "text.autoconfig.hitboxplus.option.specialTowns.pitch": "Sound pitch",
+  "text.autoconfig.hitboxplus.option.specialTowns.volume": "Sound volume",
+  "text.autoconfig.hitboxplus.option.specialTowns.soundList": "List of towns with sound",
+
+  "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "Accept Waypoints from friends"
 }

@@ -7,4 +7,10 @@ public class ConfEnums {
         FRIEND,
         CYCLE,
     }
+
+    public enum FlagLimiter {
+        DISABLED,
+        WITHIN,
+        OUT_OF
+    }
 }

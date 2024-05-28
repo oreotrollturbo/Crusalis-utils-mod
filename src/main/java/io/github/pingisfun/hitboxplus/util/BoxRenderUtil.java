@@ -46,7 +46,6 @@ public class BoxRenderUtil {
 
         }
 
-
         Color hitbox_color = ColorUtil.getEntityColor(entity);
         float red = 256 - hitbox_color.getRed();
         float green = 256 - hitbox_color.getGreen();
@@ -57,7 +56,6 @@ public class BoxRenderUtil {
             // Prevent weird invisible hitboixes
             return;
         }
-
         WorldRenderer.drawBox(matrices, vertices, box, red, green, blue, alpha);
     }
 }

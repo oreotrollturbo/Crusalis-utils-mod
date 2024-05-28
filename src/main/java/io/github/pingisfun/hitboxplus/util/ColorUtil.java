@@ -27,7 +27,7 @@ import java.awt.*;
 
 public class ColorUtil {
 
-    private static final ClientPlayerEntity player = MinecraftClient.getInstance().player;
+    public static final ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
 
     public static Color getEntityColor(Entity entity) {
@@ -143,6 +143,4 @@ public class ColorUtil {
         return entity instanceof AreaEffectCloudEntity || entity instanceof ExperienceOrbEntity || entity instanceof EyeOfEnderEntity || entity instanceof FallingBlockEntity || entity instanceof ItemEntity || entity instanceof TntEntity || entity instanceof EndCrystalEntity;
 
     }
-
-
 }
