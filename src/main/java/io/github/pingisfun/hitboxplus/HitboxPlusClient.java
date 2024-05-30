@@ -52,7 +52,7 @@ public class HitboxPlusClient implements ClientModInitializer {
 
                 // Match the pattern against the message
                 Matcher matcher = pattern.matcher(message.toString());
-//
+
                 if (matcher.find()) {
 
                     // Extract the coordinates
