@@ -74,8 +74,7 @@ public class HitboxPlusClient implements ClientModInitializer {
 
             int yOffset = config.pingTowns.yOffset; // Y offset from the settings
             List<Waypoint> waypoints = getWaypointList(); //Get the waypoint list
-
-
+            
             //########################################################################
             //                                                                       #
             //                            TOWN ATTACKS                               #
@@ -141,8 +140,6 @@ public class HitboxPlusClient implements ClientModInitializer {
                     double playerX = MinecraftClient.getInstance().player.getX();
                     double playerZ = MinecraftClient.getInstance().player.getZ(); //get the players coordinates
 
-                    // TODO MAKE THIS PART DRY
-
                     if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)){
                         //Make sure there is no flag range limit or the flag is within the limit
 
@@ -159,7 +156,7 @@ public class HitboxPlusClient implements ClientModInitializer {
             //                                                                       #
             //########################################################################
 
-            // We dont have to define a new pattern all the time we can just redefine the old one
+            // We don't have to define a new pattern all the time we can just redefine the old one
             pattern = Pattern.compile("Attack\\s*at\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*defeated");
             matcher = pattern.matcher(message.getString());
 
