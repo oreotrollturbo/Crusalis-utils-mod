@@ -102,8 +102,8 @@
   "text.autoconfig.hitboxplus.option.misc.tridentEntity.alpha": "Transparency",
 
 
-  "text.autoconfig.hitboxplus.option.friendteam": "§2§l Friendly Teams",
-  "text.autoconfig.hitboxplus.option.enemyteam": "§4§l Enemy Teams",
+  "text.autoconfig.hitboxplus.option.friendteam": "§2§l Friendly Teams (Hitbox color)",
+  "text.autoconfig.hitboxplus.option.enemyteam": "§4§l Enemy Teams (Hitbox color)",
   "text.autoconfig.hitboxplus.option.friendteam.list": "Friendly Team List",
   "text.autoconfig.hitboxplus.option.enemyteam.list": "Enemy Team List",
   "text.autoconfig.hitboxplus.option.friendteam.color": "Color",
@@ -112,7 +112,7 @@
   "text.autoconfig.hitboxplus.option.enemyteam.alpha": "Transparency",
 
   "text.autoconfig.hitboxplus.category.oreo": "Oreo's Modification",
-  "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and the team name that corresponds to them",
+  "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and the team name that corresponds to them (Hitbox color)",
   "text.autoconfig.hitboxplus.option.prefix.oreolist": "Prefix List",
   "text.autoconfig.hitboxplus.option.friendteam.oreolist": "Friendly Teams List",
   "text.autoconfig.hitboxplus.option.enemyteam.oreolist": "Enemy Teams List",
@@ -120,20 +120,24 @@
 
   "text.autoconfig.hitboxplus.option.pingTowns": "§3§l Flag to waypoint options",
   "text.autoconfig.hitboxplus.option.pingTowns.isPingingEnabled": "Enable flag waypoints",
-  "text.autoconfig.hitboxplus.option.pingTowns.oreoModList": "List of registered friendly towns (for when they get attacked)",
-  "text.autoconfig.hitboxplus.option.pingTowns.enemyTownList": "List of registered enemy towns (for when they get liberated)",
-  "text.autoconfig.hitboxplus.option.pingTowns.yOffset": "Y offset of waypoints",
-  "text.autoconfig.hitboxplus.option.pingTowns.removeCooldown": "Time until attack waypoint deletion (seconds)",
-  "text.autoconfig.hitboxplus.option.pingTowns.liberateRemoveCooldown": "Time until liberate waypoint deletion (seconds)",
+  "text.autoconfig.hitboxplus.option.pingTowns.oreoModList": "Friendly town list",
+  "text.autoconfig.hitboxplus.option.pingTowns.enemyTownList": "Enemy town list",
+  "text.autoconfig.hitboxplus.option.pingTowns.yOffset": "Waypoint Y offset (altitude)",
+  "text.autoconfig.hitboxplus.option.pingTowns.removeCooldown": "Time until waypoint deletion (in seconds)",
   "text.autoconfig.hitboxplus.option.pingTowns.limitRange": "Limit flag waypoints to a radius",
   "text.autoconfig.hitboxplus.option.pingTowns.pingDistanceLimit": "Max distance radius (in blocks)",
 
-  "text.autoconfig.hitboxplus.option.specialTowns": "§1§l Special flag sound settings",
+  "text.autoconfig.hitboxplus.option.specialTowns": "§1§l Special waypoint settings",
   "text.autoconfig.hitboxplus.option.specialTowns.playFlagSounds": "Play a sound when marked cities are flagged",
   "text.autoconfig.hitboxplus.option.specialTowns.showNotifications": "Show a notification on chunk capture",
   "text.autoconfig.hitboxplus.option.specialTowns.pitch": "Sound pitch",
   "text.autoconfig.hitboxplus.option.specialTowns.volume": "Sound volume",
-  "text.autoconfig.hitboxplus.option.specialTowns.soundList": "List of towns with sound",
+  "text.autoconfig.hitboxplus.option.specialTowns.soundList": "List of special towns",
+
+  "text.autoconfig.hitboxplus.option.pingTowns.isPingingEnabled.@Tooltip": "Enables the rest of the settings",
+  "text.autoconfig.hitboxplus.option.pingTowns.yOffset.@Tooltip": "Set how many blocks above the flag the waypoint will appear",
+  "text.autoconfig.hitboxplus.option.pingTowns.limitRange.@Tooltip": "Set an area within which waypoints can appear",
+  "text.autoconfig.hitboxplus.option.specialTowns.showNotifications.@Tooltip": "Show a notification when a special towns chunk gets capped",
 
   "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "Accept Waypoints from friends"
 }

@@ -91,7 +91,7 @@ public class ModConfig implements ConfigData {
     public PlayerOreoListConfig prefix = new PlayerOreoListConfig();
 
     @ConfigEntry.Category(value = "oreo")
-    @ConfigEntry.Gui.CollapsibleObject //The huge section with the flag to waypoint settings
+    @ConfigEntry.Gui.CollapsibleObject//The huge section with the flag to waypoint settings
     public Oreo pingTowns = new Oreo();
 
     @ConfigEntry.Category(value = "oreo")
@@ -214,17 +214,21 @@ public class ModConfig implements ConfigData {
     }
 
     public static class Oreo {
+        @ConfigEntry.Gui.TransitiveObject
+
+        @ConfigEntry.Gui.Tooltip
         public boolean isPingingEnabled = true;
 
-        public int yOffset = 200;
+        @ConfigEntry.Gui.Tooltip
+        public int yOffset = 50;
 
         public int removeCooldown = 240;
-        public int liberateRemoveCooldown = 150;
 
-        public List<String> oreoModList = new ArrayList<>();
         public List<String> enemyTownList = new ArrayList<>(); // you can make two lists in one class
+        public List<String> oreoModList = new ArrayList<>();
 
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+        @ConfigEntry.Gui.Tooltip
         public ConfEnums.FlagLimiter limitRange = ConfEnums.FlagLimiter.DISABLED;
 
         public int pingDistanceLimit = 600;
@@ -238,6 +242,7 @@ public class ModConfig implements ConfigData {
         @ConfigEntry.BoundedDiscrete(max = 5, min = 1)
         public int pitch = 1;
 
+        @ConfigEntry.Gui.Tooltip
         public boolean showNotifications = false;
     }
 }

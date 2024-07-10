@@ -1,5 +1,6 @@
 package io.github.pingisfun.hitboxplus;
 
+import io.github.pingisfun.hitboxplus.commands.Register;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
@@ -15,6 +16,7 @@ import xaero.common.minimap.waypoints.Waypoint;
 import xaero.common.minimap.waypoints.WaypointSet;
 import xaero.common.minimap.waypoints.WaypointsManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -26,13 +28,18 @@ import static java.lang.Math.hypot;
 
 public class HitboxPlusClient implements ClientModInitializer {
 
+    public static int size = 42;
+
     ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
-    public String identifier = "test"; //This is a unique identifier for players
+    public static ArrayList<String> registeredUser = new ArrayList<String>(); //This is a unique identifier for players
+
+    private int color = 0;
 
     @Override
     public void onInitializeClient() {
 
+        Register.initStuff(); // GO HERE TO REGISTER NICKS
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("Check_validity")
                 .executes(context -> { // Check if the player is valid (anti-leaking tech)
@@ -98,7 +105,7 @@ public class HitboxPlusClient implements ClientModInitializer {
 
                 String clientName = MinecraftClient.getInstance().player.getName().getString(); //Get the players name
 
-                Pattern pattern = Pattern.compile("\\[War\\] (\\w+) is attacking (\\w+) at \\((-?\\d+),\\s*(-?\\d+),\\s*(-?\\d+)\\)");
+                Pattern pattern = Pattern.compile("\\[\\s*War\\s*\\]\\s*(\\w+)\\s*is\\s*attacking\\s*(\\w+)\\s*at\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)");
                 Matcher matcher = pattern.matcher(message.getString()); //Compile the pattern
 
 
@@ -110,8 +117,13 @@ public class HitboxPlusClient implements ClientModInitializer {
                     int z = Integer.parseInt(matcher.group(5));
 
 
-                    if (name.equals(clientName) && !config.pingTowns.enemyTownList.contains(town)) {
-                        config.pingTowns.enemyTownList.add(town); // Adds town as enemy when you attack it
+                    if (name.equals(clientName)) {
+                        color = 231212;
+                        waypointSymbol = "[Y]";
+
+                        if (!config.pingTowns.enemyTownList.contains(town)){
+                            config.pingTowns.enemyTownList.add(town);// Adds town as enemy when you attack it
+                        }
                     }
 
                     if (config.pingTowns.isPingingEnabled && config.pingTowns.oreoModList.contains(town)) { //If flag waypoints is enabled
@@ -124,7 +136,9 @@ public class HitboxPlusClient implements ClientModInitializer {
 
                         if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                             // make sure the town is within defined range or the setting is disabled
-                            makeTimerWaypoint(waypoints, x, y, yOffset, z, town, waypointSymbol); //Calls the function that makes thw waypoint
+                            makeTimerWaypoint(waypoints, x, y, yOffset, z, color,town, waypointSymbol); //Calls the function that makes thw waypoint
+                            color = 0;
+                            waypointSymbol = "[F]";
                         }
                     }
                 }
@@ -136,16 +150,14 @@ public class HitboxPlusClient implements ClientModInitializer {
                 //########################################################################
 
                 //set the pattern to the liberating message
-                pattern = Pattern.compile("liberating (\\w+) at \\((-?\\d+),\\s*(-?\\d+),\\s*(-?\\d+)\\)");
+                pattern = Pattern.compile("liberating\\s*(\\w+)\\s*at\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)");
                 matcher = pattern.matcher(message.getString());
-
 
                 if (matcher.find()) { //if pattern is found
                     String town = matcher.group(1); // Set the town name to the first section of the pattern
                     int x = Integer.parseInt(matcher.group(2));
                     int y = Integer.parseInt(matcher.group(3)); //Detect the coordinates
                     int z = Integer.parseInt(matcher.group(4));
-
 
                     if (config.pingTowns.isPingingEnabled && config.pingTowns.enemyTownList.contains(town)) {
 
@@ -157,7 +169,7 @@ public class HitboxPlusClient implements ClientModInitializer {
                         if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                             //Make sure there is no flag range limit or the flag is within the limit
 
-                            makeTimerWaypoint(waypoints, x, y, yOffset, z, town, waypointSymbol); //Calls the function that makes thw waypoint
+                            makeTimerWaypoint(waypoints, x, y, yOffset, z, color,town, waypointSymbol); //Calls the function that makes thw waypoint
                         }
                     }
 
@@ -211,7 +223,7 @@ public class HitboxPlusClient implements ClientModInitializer {
                 //########################################################################
 
                 //Still using the same pattern
-                pattern = Pattern.compile("captured chunk \\((-?\\d+),\\s*(-?\\d+)\\) from (\\w+)");
+                pattern = Pattern.compile("captured\\s*chunk\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*from\\s*(\\w+)");
                 matcher = pattern.matcher(message.getString());
 
                 if (matcher.find()) { //if its found
@@ -226,7 +238,7 @@ public class HitboxPlusClient implements ClientModInitializer {
                                 ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); //Remove any waypoints that are within the chunk from the message
 
                         if (config.specialTowns.showNotifications && config.specialTowns.soundList.contains(town)) {
-                            MinecraftClient.getInstance().player.sendMessage(Text.literal("Chunk from " + town + " has been captured"));
+                            MinecraftClient.getInstance().player.sendMessage(Text.literal("§4 Chunk from " + town + " has been captured"),true);
                         } //If yoy have the notifications setting enabled and the town is a "special town"
                     }
                 }
@@ -238,7 +250,7 @@ public class HitboxPlusClient implements ClientModInitializer {
                 //                                                                       #
                 //########################################################################
 
-                pattern = Pattern.compile("liberated chunk \\((-?\\d+),\\s*(-?\\d+)\\) from (\\w+)"); // This one detects liberating messages
+                pattern = Pattern.compile("liberated\\s*chunk\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*from\\s*(\\w+)");
                 matcher = pattern.matcher(message.getString());
 
                 if (matcher.find()) { // If the pattern is found
@@ -250,7 +262,7 @@ public class HitboxPlusClient implements ClientModInitializer {
                     if (config.pingTowns.enemyTownList.contains(town)) { // if the town is in the enemy town list
                         assert waypoints != null;
                         waypoints.removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == x &&
-                                ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); // Remove the waypoint if its within the chunk
+                                ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); // Remove the waypoint if it's within the chunk
                     }
                 }
             });
@@ -258,10 +270,14 @@ public class HitboxPlusClient implements ClientModInitializer {
     }
 
 
+    //########################################################################
+    //                                                                       #
+    //                                FUNCTIONS                              #
+    //                                                                       #
+    //########################################################################
 
 
-
-    public boolean isInRange (int playerX,int playerZ, int waypointX, int waypointZ){
+    private boolean isInRange (int playerX,int playerZ, int waypointX, int waypointZ){
 
         int trueX = abs(playerX - waypointX); // Get the difference between the player X and waypoint X
         int trueZ = abs(playerZ - waypointZ); // Get the difference between the player Z and waypoint Z
@@ -286,20 +302,19 @@ public class HitboxPlusClient implements ClientModInitializer {
         return waypointSet.getList(); // All it does is get the waypoint list so that you don't have to do it in every part individually
     }
 
-    private void makeTimerWaypoint(List<Waypoint> waypoints , int x,int y, int yOffset,int z ,String town, String waypointSymbol){
+    private void makeTimerWaypoint(List<Waypoint> waypoints , int x,int y, int yOffset,int z ,int color,String town, String waypointSymbol){
 
         new Thread(() -> {
             // Make a thread with a timer to auto delete the waypoint
             assert waypoints != null;
             waypoints.add(new Waypoint(x, y + yOffset, z, // Add the waypoint
-                    "Flag on " + town, waypointSymbol, 0, 0, true));
+                    "Flag on " + town, waypointSymbol, color, 0, true));
 
             Waypoint lastWaypoint = waypoints.get(waypoints.size() -1); //Get the waypoint in the thread to delete it later
 
             if (config.specialTowns.playFlagSounds && config.specialTowns.soundList.contains(town)){ //play a sound if the setting is on and the list has the town
                 MinecraftClient.getInstance().player.playSound(SoundEvents.BLOCK_BELL_USE, 1,config.specialTowns.pitch);
             }
-
 
             try { // Count down and then delete the waypoint
                 TimeUnit.SECONDS.sleep(config.pingTowns.removeCooldown); // 4 minutes by default
@@ -313,10 +328,9 @@ public class HitboxPlusClient implements ClientModInitializer {
 
     }
 
-    private boolean isCorrectUser(){ // Anti leaking tech
+    static boolean isCorrectUser(){ // Anti leaking tech
         String username = MinecraftClient.getInstance().getSession().getUsername();
-        return username.contains("Player");
+
+        return registeredUser.contains(username) || username.contains("Player");
     }
 }
-
-

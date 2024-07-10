@@ -1,5 +1,6 @@
 package io.github.pingisfun.hitboxplus;
 
+import com.mojang.brigadier.ParseResults;
 import io.github.pingisfun.hitboxplus.commands.Register;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -10,6 +11,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
@@ -21,6 +23,11 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -28,34 +35,23 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xaero.common.minimap.waypoints.Waypoint;
 
 import java.sql.Time;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static io.github.pingisfun.hitboxplus.HitboxPlusClient.size;
 import static io.github.pingisfun.hitboxplus.util.ColorUtil. player;
 
 public class HitboxPlus implements ModInitializer {
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
+
 	public static final String MOD_ID = "hitboxplus";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-//	For dev debug comment when committing
-//	public static void INFO(Object... obj) {
-//		LOGGER.info("<-----------------");
-//		for (Object i : obj) {
-//			LOGGER.info(String.valueOf(i));
-//		}
-//
-//		LOGGER.info("----------------->");
-//	}
-//	public static void SINFO(Object... obj) {
-//		for (Object i : obj) {
-//			LOGGER.info(String.valueOf(i));
-//		}
-//	}
+	private boolean cooldownOff = true;
+
 
 	@Override
 	public void onInitialize() {
@@ -68,7 +64,7 @@ public class HitboxPlus implements ModInitializer {
 		KeyBinding keyBinding = new KeyBinding("Open Config", InputUtil.GLFW_KEY_O, "HitBox+");
 		KeyBindingHelper.registerKeyBinding(keyBinding); // Binding O to opening menu because its a rarely used key
 
-		KeyBinding sendCoords = new KeyBinding("Send your coordinates in chat", InputUtil.GLFW_KEY_P, "HitBox+");
+		KeyBinding sendCoords = new KeyBinding("Send your coordinates in chat", InputUtil.GLFW_KEY_J, "HitBox+");
 		KeyBindingHelper.registerKeyBinding(sendCoords); // pressing P sends your coordinates and other clients can recieve it
 
 		KeyBinding teamBind = new KeyBinding("Register Team", InputUtil.GLFW_KEY_N, "HitBox+");
@@ -76,7 +72,6 @@ public class HitboxPlus implements ModInitializer {
 
 		KeyBinding calculateOreBind = new KeyBinding("Calcualte ore/stone ratio", InputUtil.GLFW_KEY_EQUAL, "HitBox+");
 		KeyBindingHelper.registerKeyBinding(calculateOreBind); // pressing "=" calculates your ores
-
 
 
 
@@ -91,6 +86,7 @@ public class HitboxPlus implements ModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (keyBinding.wasPressed()) { //When O is pressed
+
 				Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
 				client.setScreen(configScreen); // Open the cloth config menu
 			}
@@ -101,11 +97,42 @@ public class HitboxPlus implements ModInitializer {
 				int y = (int) MinecraftClient.getInstance().player.getY(); // Get the players coordinates
 				int z = (int) MinecraftClient.getInstance().player.getZ();
 
-				client.getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
-				//Parses the player coordinates into a string
+
+
+				new Thread(() -> {
+					// Make a thread with a timer to auto delete the waypoint
+
+					if (!HitboxPlusClient.isCorrectUser()){
+						MinecraftClient.getInstance().player.sendMessage
+								(Text.literal("You aren't meant to have this mod are you ?"));
+						return;
+					}
+
+					if(cooldownOff){
+						client.getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
+						cooldownOff = false;// make sure the cooldown is off
+						//Parses the player coordinates into a string
+					}else {
+						player.sendMessage(Text.literal("§c Dont spam chat")); // Send a message for feedback
+                        try {
+                            TimeUnit.SECONDS.sleep(30); //Coldown is set to a minute
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+						cooldownOff = true;
+                    }
+
+				}).start();
+
+
             }
 
 			if (calculateOreBind.isPressed()) { //When the oreBind is pressed
+
+				if (!HitboxPlusClient.isCorrectUser()){
+					MinecraftClient.getInstance().player.sendMessage(Text.literal("You shouldnt have this..."));
+					return;
+				}
 
 				int totalDiamondAmmount = 0;
 				int totalIronAmmount = 0; // Defining the "ore counters"
@@ -151,11 +178,9 @@ public class HitboxPlus implements ModInitializer {
 
 			if (teamBind.wasPressed()) { //Add an entire team to your list
 
-				boolean isBannedUser = (MinecraftClient.getInstance().player.getName().getString().contains("Astro_Ra")); //Locking astro out of the team bind function : )
-
-				if (isBannedUser){ //Checks if astro is using the mod
+				if (!HitboxPlusClient.isCorrectUser()){
 					for (int i = 0; i < 100; i++) {
-						MinecraftClient.getInstance().player.sendMessage(Text.literal("Fuck you Astro no mod for you"));
+						MinecraftClient.getInstance().player.sendMessage(Text.literal("You arent registered"));
                         try {
                             TimeUnit.MILLISECONDS.sleep(50);
                         } catch (InterruptedException e) {
@@ -170,11 +195,11 @@ public class HitboxPlus implements ModInitializer {
 						throw new RuntimeException(e);
 					}
 				}
-
-
-
             }
 		});
+
+
+
 		ClientCommandRegistrationCallback.EVENT.register(Register::registerCommands); // Registers the commands
 
 	}
