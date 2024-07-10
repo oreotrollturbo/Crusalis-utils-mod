@@ -7,9 +7,12 @@
 <!-- modrinth_exclude.end -->
 
 ---
-# HitBox+
+# HitBox+ - Crusalis
 
-A mod that allows you to change the color of hitboxes.
+A mod with various utilities for Crusalis 
+
+# Based on PingIsFun's Hitbox+ mod
+https://github.com/PingIsFun/HitBoxPlus/
 
 ![showcase](https://raw.githubusercontent.com/PingIsFun/HitBoxPlus/1.19/assets/readme/showcase.png)
 
@@ -27,3 +30,4 @@ A mod that allows you to change the color of hitboxes.
 # Dependencies
 
 - Cloth Config: https://modrinth.com/mod/cloth-config
+- Xareo's minimap: https://modrinth.com/mod/xaeros-minimap/versions
