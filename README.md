@@ -4,9 +4,6 @@ A small modification to pinglin fun's Hitbox+ mod for usage on crusalis
 original mod : https://github.com/PingIsFun/HitBoxPlus/
 
 
-
-
-
 <!-- modrinth_exclude.end -->
 
 ---
