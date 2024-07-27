@@ -102,12 +102,6 @@ public class HitboxPlus implements ModInitializer {
 				new Thread(() -> {
 					// Make a thread with a timer to auto delete the waypoint
 
-					if (!HitboxPlusClient.isCorrectUser()){
-						MinecraftClient.getInstance().player.sendMessage
-								(Text.literal("You aren't meant to have this mod are you ?"));
-						return;
-					}
-
 					if(cooldownOff){
 						client.getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
 						cooldownOff = false;// make sure the cooldown is off
@@ -128,11 +122,6 @@ public class HitboxPlus implements ModInitializer {
             }
 
 			if (calculateOreBind.isPressed()) { //When the oreBind is pressed
-
-				if (!HitboxPlusClient.isCorrectUser()){
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("You shouldnt have this..."));
-					return;
-				}
 
 				int totalDiamondAmmount = 0;
 				int totalIronAmmount = 0; // Defining the "ore counters"
@@ -177,24 +166,13 @@ public class HitboxPlus implements ModInitializer {
 
 
 			if (teamBind.wasPressed()) { //Add an entire team to your list
-
-				if (!HitboxPlusClient.isCorrectUser()){
-					for (int i = 0; i < 100; i++) {
-						MinecraftClient.getInstance().player.sendMessage(Text.literal("You arent registered"));
-                        try {
-                            TimeUnit.MILLISECONDS.sleep(50);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-				}else {
-					MinecraftClient clientPlayer = MinecraftClient.getInstance(); //Gets the player you clicked at
-					try {
-						addTeam(clientPlayer); //Tries to add him to your teams list
-					} catch (InterruptedException e) {
-						throw new RuntimeException(e);
-					}
+				MinecraftClient clientPlayer = MinecraftClient.getInstance(); //Gets the player you clicked at
+				try {
+					addTeam(clientPlayer); //Tries to add him to your teams list
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
 				}
+
             }
 		});
 
