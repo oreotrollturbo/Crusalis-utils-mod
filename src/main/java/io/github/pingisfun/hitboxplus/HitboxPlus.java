@@ -74,7 +74,7 @@ public class HitboxPlus implements ModInitializer {
 		KeyBindingHelper.registerKeyBinding(calculateOreBind); // pressing "=" calculates your ores
 
 
-
+// funni
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("The_answer_to_life_the_universe_and_everything")
 				.executes(context -> { // This is just a meme command
 							context.getSource().sendFeedback(Text.literal("42"));
