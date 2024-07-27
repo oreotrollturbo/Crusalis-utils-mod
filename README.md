@@ -10,11 +10,6 @@ original mod : https://github.com/PingIsFun/HitBoxPlus/
 ---
 # HitBox+
 
-A mod with various utilities for Crusalis 
-
-# Based on PingIsFun's Hitbox+ mod
-https://github.com/PingIsFun/HitBoxPlus/
-
 ![showcase](https://raw.githubusercontent.com/PingIsFun/HitBoxPlus/1.19/assets/readme/showcase.png)
 
 ## Features
