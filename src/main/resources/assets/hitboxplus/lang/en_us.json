@@ -112,7 +112,7 @@
   "text.autoconfig.hitboxplus.option.enemyteam.alpha": "Transparency",
 
   "text.autoconfig.hitboxplus.category.oreo": "Oreo's Modification",
-  "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and the team name that corresponds to them (Hitbox color)",
+  "text.autoconfig.hitboxplus.option.prefix": "§l Prefixes and their team name (Hitbox color)",
   "text.autoconfig.hitboxplus.option.prefix.oreolist": "Prefix List",
   "text.autoconfig.hitboxplus.option.friendteam.oreolist": "Friendly Teams List",
   "text.autoconfig.hitboxplus.option.enemyteam.oreolist": "Enemy Teams List",

@@ -74,7 +74,6 @@ public class HitboxPlus implements ModInitializer {
 		KeyBindingHelper.registerKeyBinding(calculateOreBind); // pressing "=" calculates your ores
 
 
-// funni
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("The_answer_to_life_the_universe_and_everything")
 				.executes(context -> { // This is just a meme command
 							context.getSource().sendFeedback(Text.literal("42"));
@@ -98,26 +97,26 @@ public class HitboxPlus implements ModInitializer {
 				int z = (int) MinecraftClient.getInstance().player.getZ();
 
 
-
 				new Thread(() -> {
 					// Make a thread with a timer to auto delete the waypoint
 
 					if(cooldownOff){
 						client.getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
 						cooldownOff = false;// make sure the cooldown is off
+
+						try {
+							TimeUnit.SECONDS.sleep(5); //Coldown is set to a minute
+						} catch (InterruptedException e) {
+							throw new RuntimeException(e);
+						}
+
+						cooldownOff = true;
 						//Parses the player coordinates into a string
 					}else {
-						player.sendMessage(Text.literal("§c Dont spam chat")); // Send a message for feedback
-                        try {
-                            TimeUnit.SECONDS.sleep(30); //Coldown is set to a minute
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-						cooldownOff = true;
+						player.sendMessage(Text.literal("§c Please wait 5 seconds after sharing coords again")); // Send a message for feedback
                     }
 
 				}).start();
-
 
             }
 
@@ -175,8 +174,6 @@ public class HitboxPlus implements ModInitializer {
 
             }
 		});
-
-
 
 		ClientCommandRegistrationCallback.EVENT.register(Register::registerCommands); // Registers the commands
 

@@ -1,11 +1,8 @@
 package io.github.pingisfun.hitboxplus;
 
-import io.github.pingisfun.hitboxplus.commands.Register;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.sound.SoundEvents;
@@ -16,7 +13,6 @@ import xaero.common.minimap.waypoints.Waypoint;
 import xaero.common.minimap.waypoints.WaypointSet;
 import xaero.common.minimap.waypoints.WaypointsManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -45,7 +41,7 @@ public class HitboxPlusClient implements ClientModInitializer {
 
             //########################################################################
             //                                                                       #
-            //                         COORDINATE DETECTION                          #
+            //                  COORDINATE DETECTION NORMAL MESSAGES                 #
             //                                                                       #
             //########################################################################
 
@@ -70,15 +66,62 @@ public class HitboxPlusClient implements ClientModInitializer {
                     assert waypoints != null;
                     waypoints.add(new Waypoint(x, y, z, //Add the waypoint with the detected coordinates
                             sender.getName() + "'s location", "[T]", 65535, 0, true));
+                    Waypoint waypoint = waypoints.get(waypoints.size() -1);
+                    waypoint.setOneoffDestination(true);
                 }
-            }
-        });
+            }        });
 
 
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> { // When you get a server message
 
             int yOffset = config.pingTowns.yOffset; // Y offset from the settings
             List<Waypoint> waypoints = getWaypointList(); //Get the waypoint list
+
+            //########################################################################
+            //                                                                       #
+            //                  COORDINATE DETECTION SERVER MESSAGES                 #
+            //                                                                       #
+            //########################################################################
+
+            // The reason the function that detects player code doesn't work is because many servers in order to
+            // filter/redirect messages they convert them into server messages . Nodes does this too
+
+            String text = message.getString();
+
+            if (config.friend.acceptCoordsFromFriends){
+
+                for (String nick : config.friend.list){
+
+
+                    if (text.contains(nick + ": my coords (")){
+
+                        String regex = "my coords \\((-?\\d+),(-?\\d+),(-?\\d+)\\)"; //Make a pattern to detect the coords
+
+                        Pattern pattern = Pattern.compile(regex); //Compile it
+
+                        // Match the pattern against the message
+                        Matcher matcher = pattern.matcher(message.toString());
+
+
+                        if (matcher.find()) {
+
+                            // Extract the coordinates
+                            int x = Integer.parseInt(matcher.group(1));
+                            int y = Integer.parseInt(matcher.group(2));
+                            int z = Integer.parseInt(matcher.group(3));
+
+                            assert waypoints != null;
+                            waypoints.add(new Waypoint(x, y, z, //Add the waypoint with the detected coordinates
+                                    nick + "'s location", "[T]", 65535, 0, true));
+                            Waypoint waypoint = waypoints.get(waypoints.size() -1);
+                            waypoint.setOneoffDestination(true);
+                        }
+                        break;
+                    }
+
+                }
+            }
+
 
             //########################################################################
             //                                                                       #
@@ -309,6 +352,5 @@ public class HitboxPlusClient implements ClientModInitializer {
             waypoints.remove(lastWaypoint); // Delete the waypoint
 
         }).start();
-
     }
 }
