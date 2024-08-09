@@ -8,12 +8,7 @@ original mod : https://github.com/PingIsFun/HitBoxPlus/
 <!-- modrinth_exclude.end -->
 
 ---
-# HitBox+ - Crusalis
-
-A mod with various utilities for Crusalis 
-
-# Based on PingIsFun's Hitbox+ mod
-https://github.com/PingIsFun/HitBoxPlus/
+# HitBox+
 
 ![showcase](https://raw.githubusercontent.com/PingIsFun/HitBoxPlus/1.19/assets/readme/showcase.png)
 
