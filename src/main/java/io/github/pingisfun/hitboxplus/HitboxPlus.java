@@ -211,42 +211,43 @@ public class HitboxPlus implements ModInitializer {
 		//MinecraftClient.getInstance().player.sendMessage(Text.literal(entityHit.getEntity().toString())); //This is a debug message
 
 
-        if (entityHit.getEntity() instanceof OtherClientPlayerEntity ) { //If you hit another player
+		if(!entityHit.getEntity() instanceof OtherClientPlayerEntity){
+			return;
+		}
 
-			if (entityHit.getEntity().getScoreboardTeam() != null){ //If they have a team
-				String team = entityHit.getEntity().getScoreboardTeam().getName();
-				//get the players team
-				String originalPrefix = entityHit.getEntity().getDisplayName().getSiblings().get(0).getContent().toString();
-				//get the prefix
 
-				boolean wasEnemy = config.enemyteam.oreolist.remove(team); //This is to switch between enemy/friend
-				boolean wasFriend = config.friendteam.oreolist.remove(team);
+		if (entityHit.getEntity().getScoreboardTeam() != null) { //If they have a team
+			String team = entityHit.getEntity().getScoreboardTeam().getName();
+			//get the players team
+			String originalPrefix = entityHit.getEntity().getDisplayName().getSiblings().get(0).getContent().toString();
+			//get the prefix
 
-				if ((prefixConver(originalPrefix,team)).isEmpty()){ //If the team has no prefix
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
+			boolean wasEnemy = config.enemyteam.oreolist.remove(team); //This is to switch between enemy/friend
+			boolean wasFriend = config.friendteam.oreolist.remove(team);
+
+			if ((prefixConver(originalPrefix, team)).isEmpty()) { //If the team has no prefix
+				MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
+			}
+
+
+			if (wasFriend && wasEnemy) {
+				assert true; // Do nothing
+			} else if (!wasFriend && !wasEnemy) {
+				config.friendteam.oreolist.add(team); //if the player wasnt enemy or friend add him to the friends list
+				if (!config.prefix.oreolist.contains(prefixConver(originalPrefix, team)) && !(prefixConver(originalPrefix, team)).isEmpty()) {
+					config.prefix.oreolist.add(prefixConver(originalPrefix, team));
 				}
 
-
-				if (wasFriend && wasEnemy) {
-					assert true; // Do nothing
-				} else if (!wasFriend && !wasEnemy) {
-					config.friendteam.oreolist.add(team); //if the player wasnt enemy or friend add him to the friends list
-					if (!config.prefix.oreolist.contains(prefixConver(originalPrefix,team)) && !(prefixConver(originalPrefix,team)).isEmpty()){
-						config.prefix.oreolist.add(prefixConver(originalPrefix,team));
-					}
-
-				} else if (wasFriend) { //if he was a freind add him to the enemy list
-					config.enemyteam.oreolist.add(team);
-					if (!config.prefix.oreolist.contains(prefixConver(originalPrefix,team)) && !(prefixConver(originalPrefix,team)).isEmpty()){
-						config.prefix.oreolist.add(prefixConver(originalPrefix,team)); //Add his prefix to the "prefix to town" list
-					}
+			} else if (wasFriend) { //if he was a freind add him to the enemy list
+				config.enemyteam.oreolist.add(team);
+				if (!config.prefix.oreolist.contains(prefixConver(originalPrefix, team)) && !(prefixConver(originalPrefix, team)).isEmpty()) {
+					config.prefix.oreolist.add(prefixConver(originalPrefix, team)); //Add his prefix to the "prefix to town" list
 				}
-			}else {
-                assert MinecraftClient.getInstance().player != null;
-                MinecraftClient.getInstance().player.sendMessage(Text.literal("§c§ Player has no team"), true);
-			} //Send a message if the player has no team
-        }
-
+			}
+		} else {
+			assert MinecraftClient.getInstance().player != null;
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("§c§ Player has no team"), true);
+		} //Send a message if the player has no team
     }
 
 
