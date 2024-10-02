@@ -1,33 +1,23 @@
 package io.github.pingisfun.hitboxplus;
 
-import com.mojang.brigadier.ParseResults;
 import io.github.pingisfun.hitboxplus.commands.Register;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.option.StickyKeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -35,14 +25,9 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xaero.common.minimap.waypoints.Waypoint;
 
-import java.sql.Time;
-import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static io.github.pingisfun.hitboxplus.HitboxPlusClient.size;
 import static io.github.pingisfun.hitboxplus.util.ColorUtil. player;
 
 public class HitboxPlus implements ModInitializer {
@@ -211,43 +196,44 @@ public class HitboxPlus implements ModInitializer {
 		//MinecraftClient.getInstance().player.sendMessage(Text.literal(entityHit.getEntity().toString())); //This is a debug message
 
 
-		if(!entityHit.getEntity() instanceof OtherClientPlayerEntity){
-			return;
-		}
+        if (entityHit.getEntity() instanceof OtherClientPlayerEntity ) { //If you hit another player
+
+			if (entityHit.getEntity().getScoreboardTeam() != null){ //If they have a team
+
+				String team = entityHit.getEntity().getScoreboardTeam().getName();
+
+				// Prefixes are a nested hell
+				String actualPrefix = entityHit.getEntity().getDisplayName().getSiblings().get(1).getSiblings().get(0).getContent().toString(); // Inspect the structure of each
 
 
-		if (entityHit.getEntity().getScoreboardTeam() != null) { //If they have a team
-			String team = entityHit.getEntity().getScoreboardTeam().getName();
-			//get the players team
-			String originalPrefix = entityHit.getEntity().getDisplayName().getSiblings().get(0).getContent().toString();
-			//get the prefix
+				boolean wasEnemy = config.enemyteam.oreolist.remove(team); //This is to switch between enemy/friend
+				boolean wasFriend = config.friendteam.oreolist.remove(team);
 
-			boolean wasEnemy = config.enemyteam.oreolist.remove(team); //This is to switch between enemy/friend
-			boolean wasFriend = config.friendteam.oreolist.remove(team);
-
-			if ((prefixConver(originalPrefix, team)).isEmpty()) { //If the team has no prefix
-				MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
-			}
-
-
-			if (wasFriend && wasEnemy) {
-				assert true; // Do nothing
-			} else if (!wasFriend && !wasEnemy) {
-				config.friendteam.oreolist.add(team); //if the player wasnt enemy or friend add him to the friends list
-				if (!config.prefix.oreolist.contains(prefixConver(originalPrefix, team)) && !(prefixConver(originalPrefix, team)).isEmpty()) {
-					config.prefix.oreolist.add(prefixConver(originalPrefix, team));
+				if ((prefixConvert(actualPrefix,team)).isEmpty()){ //If the team has no prefix
+					MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
 				}
 
-			} else if (wasFriend) { //if he was a freind add him to the enemy list
-				config.enemyteam.oreolist.add(team);
-				if (!config.prefix.oreolist.contains(prefixConver(originalPrefix, team)) && !(prefixConver(originalPrefix, team)).isEmpty()) {
-					config.prefix.oreolist.add(prefixConver(originalPrefix, team)); //Add his prefix to the "prefix to town" list
+
+				if (wasFriend && wasEnemy) {
+					assert true; // Do nothing
+				} else if (!wasFriend && !wasEnemy) {
+					config.friendteam.oreolist.add(team); //if the player wasnt enemy or friend add him to the friends list
+					if (!config.prefix.oreolist.contains(prefixConvert(actualPrefix,team)) && !(prefixConvert(actualPrefix,team)).isEmpty()){
+						config.prefix.oreolist.add(prefixConvert(actualPrefix,team));
+					}
+
+				} else if (wasFriend) { //if he was a freind add him to the enemy list
+					config.enemyteam.oreolist.add(team);
+					if (!config.prefix.oreolist.contains(prefixConvert(actualPrefix,team)) && !(prefixConvert(actualPrefix,team)).isEmpty()){
+						config.prefix.oreolist.add(prefixConvert(actualPrefix,team)); //Add his prefix to the "prefix to town" list
+					}
 				}
-			}
-		} else {
-			assert MinecraftClient.getInstance().player != null;
-			MinecraftClient.getInstance().player.sendMessage(Text.literal("§c§ Player has no team"), true);
-		} //Send a message if the player has no team
+			}else {
+                assert MinecraftClient.getInstance().player != null;
+                MinecraftClient.getInstance().player.sendMessage(Text.literal("§c§ Player has no team"), true);
+			} //Send a message if the player has no team
+        }
+
     }
 
 
@@ -263,12 +249,12 @@ public class HitboxPlus implements ModInitializer {
 		return null; //Just in case : )
 	}
 
-	private static String prefixConver(String prefix, String team){ //Takes the prefix of the team object
-		int startIndex = prefix.indexOf("[");
-		int endIndex = prefix.lastIndexOf("]"); //This code wont work if the prefix isnt contained within brackets
+	private static String prefixConvert(String prefix, String team){ //Takes the prefix of the team object
+		int startIndex = prefix.indexOf("{");
+		int endIndex = prefix.lastIndexOf("}"); //This code wont work if the prefix isnt contained within brackets
 
 		if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-			String desiredSubstring = prefix.substring(startIndex, endIndex + 1);
+			String desiredSubstring = prefix.substring(startIndex + 1, endIndex);
 			return desiredSubstring + " = " + team; // Output: town = [prefix]
 		}
 		return ""; //Return nothing
