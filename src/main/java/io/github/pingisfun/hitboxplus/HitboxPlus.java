@@ -195,45 +195,55 @@ public class HitboxPlus implements ModInitializer {
 
 		//MinecraftClient.getInstance().player.sendMessage(Text.literal(entityHit.getEntity().toString())); //This is a debug message
 
+		if (!(entityHit.getEntity() instanceof OtherClientPlayerEntity)) return;
 
-        if (entityHit.getEntity() instanceof OtherClientPlayerEntity ) { //If you hit another player
+		//If you hit another player
 
-			if (entityHit.getEntity().getScoreboardTeam() != null){ //If they have a team
-
-				String team = entityHit.getEntity().getScoreboardTeam().getName();
-
-				// Prefixes are a nested hell
-				String actualPrefix = entityHit.getEntity().getDisplayName().getSiblings().get(1).getSiblings().get(0).getContent().toString(); // Inspect the structure of each
-
-
-				boolean wasEnemy = config.enemyteam.oreolist.remove(team); //This is to switch between enemy/friend
-				boolean wasFriend = config.friendteam.oreolist.remove(team);
-
-				if ((prefixConvert(actualPrefix,team)).isEmpty()){ //If the team has no prefix
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
-				}
+		if (entityHit.getEntity().getScoreboardTeam() == null) { //If they have no team
+			assert MinecraftClient.getInstance().player != null;
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("§c§ Player has no team"), true);
+			return;
+		}
 
 
-				if (wasFriend && wasEnemy) {
-					assert true; // Do nothing
-				} else if (!wasFriend && !wasEnemy) {
-					config.friendteam.oreolist.add(team); //if the player wasnt enemy or friend add him to the friends list
-					if (!config.prefix.oreolist.contains(prefixConvert(actualPrefix,team)) && !(prefixConvert(actualPrefix,team)).isEmpty()){
-						config.prefix.oreolist.add(prefixConvert(actualPrefix,team));
-					}
+		String team = entityHit.getEntity().getScoreboardTeam().getName();
 
-				} else if (wasFriend) { //if he was a freind add him to the enemy list
-					config.enemyteam.oreolist.add(team);
-					if (!config.prefix.oreolist.contains(prefixConvert(actualPrefix,team)) && !(prefixConvert(actualPrefix,team)).isEmpty()){
-						config.prefix.oreolist.add(prefixConvert(actualPrefix,team)); //Add his prefix to the "prefix to town" list
-					}
-				}
-			}else {
-                assert MinecraftClient.getInstance().player != null;
-                MinecraftClient.getInstance().player.sendMessage(Text.literal("§c§ Player has no team"), true);
-			} //Send a message if the player has no team
-        }
+		// Prefixes are a nested hell
 
+		boolean wasEnemy = config.enemyteam.oreolist.remove(team); //This is to switch between enemy/friend
+		boolean wasFriend = config.friendteam.oreolist.remove(team);
+
+
+		String prefix = null;
+		for (Text sibling : entityHit.getEntity().getDisplayName().getSiblings().get(1).getSiblings()){ //Loops through the siblings
+			// And finds an eligible prefix
+			if ((prefixConvert(sibling.toString(), team)).isEmpty()) { //If the team has no prefix
+				continue;
+			} else {
+				prefix = prefixConvert(sibling.toString(), team);
+				break;
+			}
+		}
+
+		if (prefix.isEmpty() || prefix == null){ //if no prefix was found
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
+			return;
+		}
+
+		if (wasFriend && wasEnemy) {
+			assert true; // Do nothing
+		} else if (!wasFriend && !wasEnemy) {
+			config.friendteam.oreolist.add(team); //if the player wasnt enemy or friend add him to the friends list
+			if (!config.prefix.oreolist.contains(prefix)) {
+				config.prefix.oreolist.add(prefix);
+			}
+
+		} else if (wasFriend) { //if he was a freind add him to the enemy list
+			config.enemyteam.oreolist.add(team);
+			if (!config.prefix.oreolist.contains(prefix)) {
+				config.prefix.oreolist.add(prefix); //Add his prefix to the "prefix to town" list
+			}
+		}
     }
 
 
@@ -250,11 +260,11 @@ public class HitboxPlus implements ModInitializer {
 	}
 
 	private static String prefixConvert(String prefix, String team){ //Takes the prefix of the team object
-		int startIndex = prefix.indexOf("{");
-		int endIndex = prefix.lastIndexOf("}"); //This code wont work if the prefix isnt contained within brackets
+		int startIndex = prefix.indexOf("{[");
+		int endIndex = prefix.lastIndexOf("] }"); //This code wont work if the prefix isnt contained within brackets
 
 		if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-			String desiredSubstring = prefix.substring(startIndex + 1, endIndex);
+			String desiredSubstring = prefix.substring(startIndex + 1, endIndex + 1);
 			return desiredSubstring + " = " + team; // Output: town = [prefix]
 		}
 		return ""; //Return nothing
