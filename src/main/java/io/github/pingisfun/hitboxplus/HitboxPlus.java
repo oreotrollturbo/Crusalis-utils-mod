@@ -225,7 +225,7 @@ public class HitboxPlus implements ModInitializer {
 			}
 		}
 
-		if (prefix.isEmpty() || prefix == null){ //if no prefix was found
+		if (prefix == null || prefix.isEmpty()){ //if no prefix was found
 			MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
 			return;
 		}
