@@ -215,15 +215,18 @@ public class HitboxPlus implements ModInitializer {
 
 
 		String prefix = null;
-		for (Text sibling : entityHit.getEntity().getDisplayName().getSiblings().get(1).getSiblings()){ //Loops through the siblings
-			// And finds an eligible prefix
-			if ((prefixConvert(sibling.toString(), team)).isEmpty()) { //If the team has no prefix
-				continue;
-			} else {
-				prefix = prefixConvert(sibling.toString(), team);
-				break;
+		for (Text ogSibling : entityHit.getEntity().getDisplayName().getSiblings()){
+			for (Text sibling : ogSibling.getSiblings()){ //Loops through the siblings
+				// And finds an eligible prefix
+				if ((prefixConvert(sibling.toString(), team)).isEmpty()) { //If the team has no prefix
+					continue;
+				} else {
+					prefix = prefixConvert(sibling.toString(), team);
+					break;
+				}
 			}
 		}
+
 
 		if (prefix == null || prefix.isEmpty()){ //if no prefix was found
 			MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
