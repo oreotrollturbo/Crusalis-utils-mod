@@ -224,7 +224,7 @@ public class ModConfig implements ConfigData {
 
         public int removeCooldown = 240;
 
-        public List<String> enemyTownList = new ArrayList<>(); // you can make two lists in one class
+        public List<String> enemyTownList = new ArrayList<>();
         public List<String> oreoModList = new ArrayList<>();
 
         @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)

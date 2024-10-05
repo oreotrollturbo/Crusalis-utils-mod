@@ -217,6 +217,7 @@ public class HitboxPlus implements ModInitializer {
 		String prefix = null;
 		for (Text ogSibling : entityHit.getEntity().getDisplayName().getSiblings()){
 			for (Text sibling : ogSibling.getSiblings()){ //Loops through the siblings
+
 				// And finds an eligible prefix
 				if ((prefixConvert(sibling.toString(), team)).isEmpty()) { //If the team has no prefix
 					continue;
@@ -230,20 +231,21 @@ public class HitboxPlus implements ModInitializer {
 
 		if (prefix == null || prefix.isEmpty()){ //if no prefix was found
 			MinecraftClient.getInstance().player.sendMessage(Text.literal("This team has no prefix :("));
-			return;
 		}
 
 		if (wasFriend && wasEnemy) {
 			assert true; // Do nothing
 		} else if (!wasFriend && !wasEnemy) {
 			config.friendteam.oreolist.add(team); //if the player wasnt enemy or friend add him to the friends list
-			if (!config.prefix.oreolist.contains(prefix)) {
+			if (!config.prefix.oreolist.contains(prefix) && !(prefix == null || prefix.isEmpty())) {
+				MinecraftClient.getInstance().player.sendMessage(Text.literal("Prefix added to friend list"));
 				config.prefix.oreolist.add(prefix);
 			}
 
 		} else if (wasFriend) { //if he was a freind add him to the enemy list
 			config.enemyteam.oreolist.add(team);
-			if (!config.prefix.oreolist.contains(prefix)) {
+			if (!config.prefix.oreolist.contains(prefix) && !(prefix == null || prefix.isEmpty())) {
+
 				config.prefix.oreolist.add(prefix); //Add his prefix to the "prefix to town" list
 			}
 		}
@@ -263,11 +265,11 @@ public class HitboxPlus implements ModInitializer {
 	}
 
 	private static String prefixConvert(String prefix, String team){ //Takes the prefix of the team object
-		int startIndex = prefix.indexOf("{[");
-		int endIndex = prefix.lastIndexOf("] }"); //This code wont work if the prefix isnt contained within brackets
+		int startIndex = prefix.indexOf("[");
+		int endIndex = prefix.lastIndexOf("] "); //This code wont work if the prefix isnt contained within brackets
 
 		if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-			String desiredSubstring = prefix.substring(startIndex + 1, endIndex + 1);
+			String desiredSubstring = prefix.substring(startIndex, endIndex + 1);
 			return desiredSubstring + " = " + team; // Output: town = [prefix]
 		}
 		return ""; //Return nothing
