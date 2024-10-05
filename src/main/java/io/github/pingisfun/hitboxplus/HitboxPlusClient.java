@@ -93,7 +93,7 @@ public class HitboxPlusClient implements ClientModInitializer {
                 for (String nick : config.friend.list){
 
 
-                    if (text.contains(nick + ": my coords (")){
+                    if (text.contains(nick) && text.contains("my coords (")){
 
                         String regex = "my coords \\((-?\\d+),(-?\\d+),(-?\\d+)\\)"; //Make a pattern to detect the coords
 
