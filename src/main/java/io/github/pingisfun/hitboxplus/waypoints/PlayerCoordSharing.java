@@ -13,8 +13,6 @@ import static io.github.pingisfun.hitboxplus.waypoints.WaypointUtils.*;
 
 public class PlayerCoordSharing {
 
-    private static String playerName;
-
     public static void initialize(){
 
 
@@ -31,7 +29,7 @@ public class PlayerCoordSharing {
             //########################################################################
 
 
-            if (!config.friend.acceptCoordsFromFriends || !config.friend.list.contains(playerName) || !message.toString().contains("my coords (")){
+            if (!config.friend.acceptCoordsFromFriends || !config.friend.list.contains(sender.getName()) || !message.toString().contains("my coords (")){
                 return;
             }
 
