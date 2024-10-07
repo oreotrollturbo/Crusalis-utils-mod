@@ -196,8 +196,10 @@ public class ModConfig implements ConfigData {
 
         public boolean acceptCoordsFromFriends = false; //Add the setting to accept coordinates from teammates
 
+        public int friendWaypointTimer = 40; //Add the setting to accept coordinates from teammates
+
         public PlayerListConfig(int color) {
-            this.color = color; //The color picker doesent work : (
+            this.color = color; //The color picker doesn't work : (
         }
         public List<String> list = new ArrayList<>(); //Making the list
 
