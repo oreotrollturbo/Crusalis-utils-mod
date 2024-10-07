@@ -12,15 +12,13 @@ import static java.lang.Math.abs;
 
 public class HitboxPlusClient implements ClientModInitializer {
 
-    ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
 
     @Override
     public void onInitializeClient() {
 
         ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
 
-            FlagsPlacedDetector.handleTownAttack(message.toString());
-            FlagsPlacedDetector.handleTownLiberation(message.toString());
+            FlagsPlacedDetector.checkForPlacedFlags(message.toString());
 
             FlagsBrokenDetector.handleFlags(message.toString());
 

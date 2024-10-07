@@ -15,6 +15,11 @@ public class FlagsPlacedDetector {
 
     static List<Waypoint> waypoints = getWaypointList();
 
+    public static void checkForPlacedFlags(String message){
+        handleTownAttack(message);
+        handleTownLiberation(message);
+    }
+
 
     public static void handleTownAttack(String message) {
 
@@ -57,7 +62,6 @@ public class FlagsPlacedDetector {
                     assert waypoints != null;
                     makeTimerWaypoint(waypoints, x, y, yOffset, z, color, town, waypointSymbol); //Calls the function that makes thw waypoint
                     color = 0;
-                    waypointSymbol = "[F]";
                 }
             }
         }
