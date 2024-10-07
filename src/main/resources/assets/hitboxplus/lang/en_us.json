@@ -16,12 +16,16 @@
 
 
   "text.autoconfig.hitboxplus.option.isPlayerConfigEnabled.@PrefixText": "§f§lPlayer Config",
-  "text.autoconfig.hitboxplus.option.isPlayerConfigEnabled": "Enabled",
+  "text.autoconfig.hitboxplus.option.isPlayerConfigEnabled": "Enable player config",
+  "text.autoconfig.hitboxplus.option.friend.areWaypointsTimed": "Enable waypoint timer deletion",
+  "text.autoconfig.hitboxplus.option.friend.friendWaypointTimer": "Waypoint deletion timer",
   "text.autoconfig.hitboxplus.option.friend": "§a§l Friends",
   "text.autoconfig.hitboxplus.option.friend.list": "Friend List",
   "text.autoconfig.hitboxplus.option.friend.color": "Color",
   "text.autoconfig.hitboxplus.option.friend.alpha": "Transparency",
   "text.autoconfig.hitboxplus.option.enemy": "§c§l Enemies",
+  "text.autoconfig.hitboxplus.option.enemy.areWaypointsTimed": "OUT OF ORDER",
+  "text.autoconfig.hitboxplus.option.enemy.friendWaypointTimer": "OUT OF ORDER",
   "text.autoconfig.hitboxplus.option.enemy.list": "Enemy List",
   "text.autoconfig.hitboxplus.option.enemy.color": "Color",
   "text.autoconfig.hitboxplus.option.enemy.alpha": "Transparency",

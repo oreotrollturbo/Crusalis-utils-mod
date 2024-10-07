@@ -1,5 +1,6 @@
 package io.github.pingisfun.hitboxplus.waypoints;
 
+import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import xaero.common.minimap.waypoints.Waypoint;
@@ -13,62 +14,51 @@ import static io.github.pingisfun.hitboxplus.waypoints.WaypointUtils.*;
 
 public class PlayerCoordSharing {
 
-    public static void initialize(){
+    public static void handlePlayerWaypoint(String message, GameProfile sender){
+
+        // When a chat message is received
+        assert sender != null;
+        assert MinecraftClient.getInstance().player != null;
+
+        //########################################################################
+        //                                                                       #
+        //                  COORDINATE DETECTION NORMAL MESSAGES                 #
+        //                                                                       #
+        //########################################################################
 
 
+        if (!config.friend.acceptCoordsFromFriends || !config.friend.list.contains(sender.getName()) || !message.toString().contains("my coords (")){
+            return;
+        }
 
-        ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
-            // When a chat message is received
-            assert sender != null;
-            assert MinecraftClient.getInstance().player != null;
+        handleWaypointCreation(message.toString(),sender.getName());
 
-            //########################################################################
-            //                                                                       #
-            //                  COORDINATE DETECTION NORMAL MESSAGES                 #
-            //                                                                       #
-            //########################################################################
-
-
-            if (!config.friend.acceptCoordsFromFriends || !config.friend.list.contains(sender.getName()) || !message.toString().contains("my coords (")){
-                return;
-            }
-
-            handleWaypointCreation(message.toString(),sender.getName());
-
-        });
-
-
-        ClientReceiveMessageEvents.GAME.register((message, overlay) -> { // When you get a server message
-
-            //########################################################################
-            //                                                                       #
-            //                  COORDINATE DETECTION SERVER MESSAGES                 #
-            //                                                                       #
-            //########################################################################
-
-            // The reason the function that detects player code doesn't work is because many servers in order to
-            // filter/redirect messages they convert them into server messages . Nodes does this too
-
-            String text = message.getString();
-
-            if (text == null || !config.friend.acceptCoordsFromFriends) {
-                return;
-            }
-
-
-            for (String nick : config.friend.list) {
-
-                if (!text.contains(nick) || !text.contains("my coords (")){
-                    return;
-                }
-
-                handleWaypointCreation(message.toString(),nick);
-
-                break;
-            }
-
-        });
     }
+
+
+    public static void handleServerWaypoint(String message){
+
+        // The reason the function that detects player code doesn't work is because many servers in order to
+        // filter/redirect messages they convert them into server messages . Nodes does this too;
+
+        if (message == null || !config.friend.acceptCoordsFromFriends) {
+            return;
+        }
+
+
+        for (String nick : config.friend.list) {
+
+            if (!message.contains(nick) || !message.contains("my coords (")){
+                return;
+            }
+
+            handleWaypointCreation(message,nick);
+
+            break;
+        }
+
+    }
+
 
     private static void handleWaypointCreation(String message, String playerName){
 
