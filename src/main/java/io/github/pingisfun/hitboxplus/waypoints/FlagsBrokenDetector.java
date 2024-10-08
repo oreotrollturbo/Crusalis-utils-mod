@@ -1,8 +1,6 @@
 package io.github.pingisfun.hitboxplus.waypoints;
 
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ChunkSectionPos;
 
@@ -14,9 +12,17 @@ import static io.github.pingisfun.hitboxplus.waypoints.WaypointUtils.config;
 
 public class FlagsBrokenDetector {
 
-
-
     public static void handleFlags (String message){ //TODO split this into several functions
+
+        handleNormalFlagBreak(message);
+        handleDefendFlagBreak(message);
+
+        handleNormalFlagCap(message);
+        handleLiberateFlagCap(message);
+
+    }
+
+    private static void handleNormalFlagBreak(String message){
 
         //########################################################################
         //                                                                       #
@@ -37,6 +43,9 @@ public class FlagsBrokenDetector {
             assert waypoints != null;
             waypoints.removeIf(waypoint -> waypoint.getX() == waypointX && waypoint.getZ() == waypointZ); // Remove a waypoint in the list if it matches the message coordinates
         }
+    }
+
+    private static void handleDefendFlagBreak(String message){
 
         //########################################################################
         //                                                                       #
@@ -45,8 +54,8 @@ public class FlagsBrokenDetector {
         //########################################################################
 
         //Still using the same pattern
-        pattern = Pattern.compile("defended\\s+chunk\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*against");
-        matcher = pattern.matcher(message);
+        Pattern pattern = Pattern.compile("defended\\s+chunk\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*against");
+        Matcher matcher = pattern.matcher(message);
 
         if (matcher.find()) { //If its found
 
@@ -57,6 +66,11 @@ public class FlagsBrokenDetector {
             waypoints.removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == chunkX &&
                     ChunkSectionPos.getSectionCoord(waypoint.getZ()) == chunkZ); //Checks if any waypoints are in the chunk of the message
         }
+    }
+
+
+
+    private static void handleNormalFlagCap(String message){
 
         //########################################################################
         //                                                                       #
@@ -65,8 +79,8 @@ public class FlagsBrokenDetector {
         //########################################################################
 
         //Still using the same pattern
-        pattern = Pattern.compile("captured\\s*chunk\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*from\\s*(\\w+)");
-        matcher = pattern.matcher(message);
+        Pattern pattern = Pattern.compile("captured\\s*chunk\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*from\\s*(\\w+)");
+        Matcher matcher = pattern.matcher(message);
 
         if (matcher.find()) { //if its found
 
@@ -80,11 +94,15 @@ public class FlagsBrokenDetector {
                         ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); //Remove any waypoints that are within the chunk from the message
 
                 if (config.specialTowns.showNotifications && config.specialTowns.soundList.contains(town)) {
+                    assert MinecraftClient.getInstance().player != null;
                     MinecraftClient.getInstance().player.sendMessage(Text.literal("§4 Chunk from " + town + " has been captured"), true);
                 } //If yoy have the notifications setting enabled and the town is a "special town"
             }
         }
 
+    }
+
+    private static void handleLiberateFlagCap(String message){
 
         //########################################################################
         //                                                                       #
@@ -92,8 +110,8 @@ public class FlagsBrokenDetector {
         //                                                                       #
         //########################################################################
 
-        pattern = Pattern.compile("liberated\\s*chunk\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*from\\s*(\\w+)");
-        matcher = pattern.matcher(message);
+        Pattern pattern = Pattern.compile("liberated\\s*chunk\\s*\\(\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*\\)\\s*from\\s*(\\w+)");
+        Matcher matcher = pattern.matcher(message);
 
         if (matcher.find()) { // If the pattern is found
 
@@ -109,5 +127,4 @@ public class FlagsBrokenDetector {
         }
 
     }
-
 }

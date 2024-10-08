@@ -1,6 +1,7 @@
 package io.github.pingisfun.hitboxplus.waypoints;
 
 import com.mojang.authlib.GameProfile;
+import io.github.pingisfun.hitboxplus.HitboxPlusClient;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import xaero.common.minimap.waypoints.Waypoint;
@@ -27,11 +28,11 @@ public class PlayerCoordSharing {
         //########################################################################
 
 
-        if (!config.friend.acceptCoordsFromFriends || !config.friend.list.contains(sender.getName()) || !message.toString().contains("my coords (")){
+        if (!config.friend.acceptCoordsFromFriends || !config.friend.list.contains(sender.getName()) || !message.contains("my coords (")){
             return;
         }
 
-        handleWaypointCreation(message.toString(),sender.getName());
+        handleWaypointCreation(message,sender.getName());
 
     }
 
@@ -41,15 +42,15 @@ public class PlayerCoordSharing {
         // The reason the function that detects player code doesn't work is because many servers in order to
         // filter/redirect messages they convert them into server messages . Nodes does this too;
 
-        if (message == null || !config.friend.acceptCoordsFromFriends) {
+        if (message == null || !config.friend.acceptCoordsFromFriends || !message.contains("my coords (")) {
             return;
         }
 
 
         for (String nick : config.friend.list) {
 
-            if (!message.contains(nick) || !message.contains("my coords (")){
-                return;
+            if (!message.contains(nick)){
+                continue;
             }
 
             handleWaypointCreation(message,nick);

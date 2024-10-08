@@ -6,6 +6,8 @@ import io.github.pingisfun.hitboxplus.waypoints.PlayerCoordSharing;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 
 import static java.lang.Math.abs;
 

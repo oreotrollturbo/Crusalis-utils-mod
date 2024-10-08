@@ -24,8 +24,6 @@
   "text.autoconfig.hitboxplus.option.friend.color": "Color",
   "text.autoconfig.hitboxplus.option.friend.alpha": "Transparency",
   "text.autoconfig.hitboxplus.option.enemy": "§c§l Enemies",
-  "text.autoconfig.hitboxplus.option.enemy.areWaypointsTimed": "OUT OF ORDER",
-  "text.autoconfig.hitboxplus.option.enemy.friendWaypointTimer": "OUT OF ORDER",
   "text.autoconfig.hitboxplus.option.enemy.list": "Enemy List",
   "text.autoconfig.hitboxplus.option.enemy.color": "Color",
   "text.autoconfig.hitboxplus.option.enemy.alpha": "Transparency",
@@ -143,5 +141,9 @@
   "text.autoconfig.hitboxplus.option.pingTowns.limitRange.@Tooltip": "Set an area within which waypoints can appear",
   "text.autoconfig.hitboxplus.option.specialTowns.showNotifications.@Tooltip": "Show a notification when a special towns chunk gets capped",
 
-  "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "Accept Waypoints from friends"
+  "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "Accept Waypoints from friends",
+
+  "text.autoconfig.hitboxplus.option.enemy.acceptCoordsFromFriends": "OUT OF ORDER",
+  "text.autoconfig.hitboxplus.option.enemy.areWaypointsTimed": "OUT OF ORDER",
+  "text.autoconfig.hitboxplus.option.enemy.friendWaypointTimer": "OUT OF ORDER"
 }
