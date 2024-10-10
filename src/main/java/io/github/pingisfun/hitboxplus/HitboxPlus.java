@@ -46,16 +46,19 @@ public class HitboxPlus implements ModInitializer {
 
 		AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
 
-		KeyBinding keyBinding = new KeyBinding("Open Config", InputUtil.GLFW_KEY_O, "HitBox+");
-		KeyBindingHelper.registerKeyBinding(keyBinding); // Binding O to opening menu because its a rarely used key
+		KeyBinding openConfig = new KeyBinding("Open Config", InputUtil.GLFW_KEY_O, "Crusalis Utils");
+		KeyBindingHelper.registerKeyBinding(openConfig); // Binding O to opening menu because its a rarely used key
 
-		KeyBinding sendCoords = new KeyBinding("Send your coordinates in chat", InputUtil.GLFW_KEY_J, "HitBox+");
-		KeyBindingHelper.registerKeyBinding(sendCoords); // pressing P sends your coordinates and other clients can recieve it
+		KeyBinding sendCoords = new KeyBinding("Send your coordinates in chat", InputUtil.GLFW_KEY_J, "Crusalis Utils");
+		KeyBindingHelper.registerKeyBinding(sendCoords); // pressing J sends your coordinates and other clients can recieve it
 
-		KeyBinding teamBind = new KeyBinding("Register Team", InputUtil.GLFW_KEY_N, "HitBox+");
+		KeyBinding sendPing = new KeyBinding("Send a location ping", InputUtil.GLFW_KEY_K, "Crusalis Utils");
+		KeyBindingHelper.registerKeyBinding(sendPing); // pressing K sends your coordinates and other clients can recieve it
+
+		KeyBinding teamBind = new KeyBinding("Register Team", InputUtil.GLFW_KEY_N, "Crusalis Utils");
 		KeyBindingHelper.registerKeyBinding(teamBind); // pressing N adds an entire nation to your "teams list"
 
-		KeyBinding calculateOreBind = new KeyBinding("Calcualte ore/stone ratio", InputUtil.GLFW_KEY_EQUAL, "HitBox+");
+		KeyBinding calculateOreBind = new KeyBinding("Calcualte ore/stone ratio", InputUtil.GLFW_KEY_EQUAL, "Crusalis Utils");
 		KeyBindingHelper.registerKeyBinding(calculateOreBind); // pressing "=" calculates your ores
 
 
@@ -69,7 +72,7 @@ public class HitboxPlus implements ModInitializer {
 
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (keyBinding.wasPressed()) { //When O is pressed
+			if (openConfig.wasPressed()) { //When O is pressed
 
 				Screen configScreen = AutoConfig.getConfigScreen(ModConfig.class, client.currentScreen).get();
 				client.setScreen(configScreen); // Open the cloth config menu
@@ -104,6 +107,12 @@ public class HitboxPlus implements ModInitializer {
 				}).start();
 
             }
+
+			if (sendPing.wasPressed()){
+
+
+
+			}
 
 			if (calculateOreBind.isPressed()) { //When the oreBind is pressed
 

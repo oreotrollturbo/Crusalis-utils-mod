@@ -7,12 +7,13 @@ import net.minecraft.util.math.ChunkSectionPos;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.github.pingisfun.hitboxplus.waypoints.FlagsPlacedDetector.waypoints;
+
 import static io.github.pingisfun.hitboxplus.waypoints.WaypointUtils.config;
+import static io.github.pingisfun.hitboxplus.waypoints.WaypointUtils.getWaypointList;
 
 public class FlagsBrokenDetector {
 
-    public static void handleFlags (String message){ //TODO split this into several functions
+    public static void handleFlags (String message){
 
         handleNormalFlagBreak(message);
         handleDefendFlagBreak(message);
@@ -40,8 +41,8 @@ public class FlagsBrokenDetector {
             int waypointX = Integer.parseInt(matcher.group(1));
             int waypointZ = Integer.parseInt(matcher.group(3)); // We take the X and Z ignoring the Y
 
-            assert waypoints != null;
-            waypoints.removeIf(waypoint -> waypoint.getX() == waypointX && waypoint.getZ() == waypointZ); // Remove a waypoint in the list if it matches the message coordinates
+
+            getWaypointList().removeIf(waypoint -> waypoint.getX() == waypointX && waypoint.getZ() == waypointZ); // Remove a waypoint in the list if it matches the message coordinates
         }
     }
 
@@ -62,9 +63,9 @@ public class FlagsBrokenDetector {
             int chunkX = Integer.parseInt(matcher.group(1));// get the chunk coordinates
             int chunkZ = Integer.parseInt(matcher.group(2)); //This one doesn't send precise coordinates but ones of its chunk
 
-            assert waypoints != null;
-            waypoints.removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == chunkX &&
-                    ChunkSectionPos.getSectionCoord(waypoint.getZ()) == chunkZ); //Checks if any waypoints are in the chunk of the message
+
+            getWaypointList().removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == chunkX &&
+                    ChunkSectionPos.getSectionCoord(waypoint.getZ()) == chunkZ); //Checks if any getWaypointList() are in the chunk of the message
         }
     }
 
@@ -89,9 +90,9 @@ public class FlagsBrokenDetector {
             String town = matcher.group(3); //Get the town name
 
             if (config.pingTowns.oreoModList.contains(town)) { // If the town is within your towns list
-                assert waypoints != null;
-                waypoints.removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == x &&
-                        ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); //Remove any waypoints that are within the chunk from the message
+                assert getWaypointList() != null;
+                getWaypointList().removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == x &&
+                        ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); //Remove any getWaypointList() that are within the chunk from the message
 
                 if (config.specialTowns.showNotifications && config.specialTowns.soundList.contains(town)) {
                     assert MinecraftClient.getInstance().player != null;
@@ -120,8 +121,8 @@ public class FlagsBrokenDetector {
             String town = matcher.group(3); // Get the town
 
             if (config.pingTowns.enemyTownList.contains(town)) { // if the town is in the enemy town list
-                assert waypoints != null;
-                waypoints.removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == x &&
+                assert getWaypointList() != null;
+                getWaypointList().removeIf(waypoint -> ChunkSectionPos.getSectionCoord(waypoint.getX()) == x &&
                         ChunkSectionPos.getSectionCoord(waypoint.getZ()) == z); // Remove the waypoint if it's within the chunk
             }
         }

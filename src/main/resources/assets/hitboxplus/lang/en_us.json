@@ -20,7 +20,7 @@
   "text.autoconfig.hitboxplus.option.friend.areWaypointsTimed": "Enable waypoint timer deletion",
   "text.autoconfig.hitboxplus.option.friend.friendWaypointTimer": "Waypoint deletion timer",
   "text.autoconfig.hitboxplus.option.friend": "§a§l Friends",
-  "text.autoconfig.hitboxplus.option.friend.list": "Friend List",
+  "text.autoconfig.hitboxplus.option.friend.list": "§l Friend List",
   "text.autoconfig.hitboxplus.option.friend.color": "Color",
   "text.autoconfig.hitboxplus.option.friend.alpha": "Transparency",
   "text.autoconfig.hitboxplus.option.enemy": "§c§l Enemies",
@@ -141,7 +141,9 @@
   "text.autoconfig.hitboxplus.option.pingTowns.limitRange.@Tooltip": "Set an area within which waypoints can appear",
   "text.autoconfig.hitboxplus.option.specialTowns.showNotifications.@Tooltip": "Show a notification when a special towns chunk gets capped",
 
-  "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "Accept Waypoints from friends",
+  "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "§l Accept location Waypoints from friends",
+  "text.autoconfig.hitboxplus.option.friend.acceptPings": "§l Accept position pings from friends",
+  "text.autoconfig.hitboxplus.option.friend.pingWaypointTimer": "Ping waypoint timer",
 
   "text.autoconfig.hitboxplus.option.enemy.acceptCoordsFromFriends": "OUT OF ORDER",
   "text.autoconfig.hitboxplus.option.enemy.areWaypointsTimed": "OUT OF ORDER",

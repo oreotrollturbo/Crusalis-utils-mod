@@ -31,7 +31,7 @@ public class ModConfig implements ConfigData {
 
     @ConfigEntry.Gui.PrefixText
     @ConfigEntry.Category(value = "players")
-    public boolean isPlayerConfigEnabled = false;
+    public boolean isPlayerConfigEnabled = true;
 
 
     @ConfigEntry.Category(value = "players")
@@ -194,11 +194,14 @@ public class ModConfig implements ConfigData {
 
     public static class PlayerListConfig {
 
-        public boolean acceptCoordsFromFriends = false; //Add the setting to accept coordinates from teammates
-
-        public boolean areWaypointsTimed = true;
+        public boolean acceptCoordsFromFriends = true; //Add the setting to accept coordinates from teammates
 
         public int friendWaypointTimer = 40; //Add the setting to accept coordinates from teammates
+
+        public boolean acceptPings = true;
+
+        public int pingWaypointTimer = 3;
+
 
         public PlayerListConfig(int color) {
             this.color = color; //The color picker doesn't work : (

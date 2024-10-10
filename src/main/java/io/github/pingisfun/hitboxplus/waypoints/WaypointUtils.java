@@ -10,6 +10,7 @@ import xaero.common.minimap.waypoints.Waypoint;
 import xaero.common.minimap.waypoints.WaypointSet;
 import xaero.common.minimap.waypoints.WaypointsManager;
 
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -56,7 +57,7 @@ public class WaypointUtils {
         return waypointSet.getList(); // All it does is get the waypoint list so that you don't have to do it in every part individually
     }
 
-    public static void makeTimerWaypoint(List<Waypoint> waypoints , int x,int y, int yOffset,int z ,int color,String town, String waypointSymbol){
+    public static void makeTimerWaypoint(List<Waypoint> waypoints , int x, int y, int yOffset, int z , int color, String town, String waypointSymbol){
 
 
         // Make a thread with a timer to auto delete the waypoint

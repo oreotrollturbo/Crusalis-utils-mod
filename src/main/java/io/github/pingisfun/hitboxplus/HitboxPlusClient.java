@@ -18,23 +18,44 @@ public class HitboxPlusClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+        ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 
-            FlagsPlacedDetector.checkForPlacedFlags(message.toString());
+            if  (MinecraftClient.getInstance().player == null){
+                return true;
+            }
 
-            FlagsBrokenDetector.handleFlags(message.toString());
+            try {
 
-            PlayerCoordSharing.handleServerWaypoint(message.toString());
+                FlagsPlacedDetector.checkForPlacedFlags(message.toString());
+
+                FlagsBrokenDetector.handleFlags(message.toString());
+
+                PlayerCoordSharing.handleServerWaypoint(message.toString());
+
+                return true;
+            } catch (Exception e) {
+                MinecraftClient.getInstance().player.sendMessage(Text.literal("Exception: " + e.getMessage()));
+                return false;
+            }
 
         });
 
-        ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
+        ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
 
-            PlayerCoordSharing.handlePlayerWaypoint(message.toString(),sender);
+            if  (sender == null || MinecraftClient.getInstance().player == null){
+                MinecraftClient.getInstance().player.sendMessage(Text.literal("sender or instance is null"));
+                return true;
+            }
 
+            try {
+                PlayerCoordSharing.handlePlayerWaypoint(message.toString(),sender);
+                return true;
+
+            } catch (Exception e){
+                MinecraftClient.getInstance().player.sendMessage(Text.literal("Exception: " + e.getMessage()));
+
+                return false;
+            }
         });
-
     }
-
-
 }

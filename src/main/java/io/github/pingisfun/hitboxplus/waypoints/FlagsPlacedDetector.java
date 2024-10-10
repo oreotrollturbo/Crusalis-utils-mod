@@ -1,7 +1,6 @@
 package io.github.pingisfun.hitboxplus.waypoints;
 
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import xaero.common.minimap.waypoints.Waypoint;
 
@@ -13,7 +12,9 @@ import static io.github.pingisfun.hitboxplus.waypoints.WaypointUtils.*;
 
 public class FlagsPlacedDetector {
 
-    static List<Waypoint> waypoints = getWaypointList();
+    public static List<Waypoint> getWaypoints() {
+        return getWaypointList();
+    }
 
     public static void checkForPlacedFlags(String message){
         handleTownAttack(message);
@@ -59,8 +60,7 @@ public class FlagsPlacedDetector {
 
                 if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                     // make sure the town is within defined range or the setting is disabled
-                    assert waypoints != null;
-                    makeTimerWaypoint(waypoints, x, y, yOffset, z, color, town, waypointSymbol); //Calls the function that makes thw waypoint
+                    makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, waypointSymbol); //Calls the function that makes thw waypoint
                     color = 0;
                 }
             }
@@ -91,8 +91,7 @@ public class FlagsPlacedDetector {
                 if (config.pingTowns.limitRange == ConfEnums.FlagLimiter.DISABLED || isInRange((int) playerX, (int) playerZ, x, z)) {
                     //Make sure there is no flag range limit or the flag is within the limit
 
-                    assert waypoints != null;
-                    makeTimerWaypoint(waypoints, x, y, yOffset, z, color, town, "[F]"); //Calls the function that makes thw waypoint
+                    makeTimerWaypoint(getWaypoints(), x, y, yOffset, z, color, town, "[F]"); //Calls the function that makes thw waypoint
                 }
             }
 
