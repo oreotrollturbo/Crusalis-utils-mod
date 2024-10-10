@@ -83,9 +83,7 @@ public class HitboxPlus implements ModInitializer {
             }
 
 			if (sendPing.wasPressed()){
-
-
-
+				sendPing();
 			}
 
 			if (calculateOreBind.isPressed()) { //When the oreBind is pressed
@@ -136,6 +134,12 @@ public class HitboxPlus implements ModInitializer {
 			}
 
 		}).start();
+
+	}
+
+	private static void sendPing(){
+
+
 
 	}
 
