@@ -18,11 +18,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +39,8 @@ public class HitboxPlus implements ModInitializer {
 	public static final String MOD_ID = "hitboxplus";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	private static boolean cooldownOff = true;
+	private static boolean sendCoordCooldown = true;
+	private static boolean pingCooldownDisabled = true;
 
 
 	@Override
@@ -117,9 +122,9 @@ public class HitboxPlus implements ModInitializer {
 		new Thread(() -> {
 			// Make a thread with a timer to auto delete the waypoint
 
-			if(cooldownOff){
+			if(sendCoordCooldown){
 				MinecraftClient.getInstance().getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
-				cooldownOff = false;// make sure the cooldown is off
+				sendCoordCooldown = false;// make sure the cooldown is off
 
 				try {
 					TimeUnit.SECONDS.sleep(5); //Coldown is set to a minute
@@ -127,7 +132,7 @@ public class HitboxPlus implements ModInitializer {
 					throw new RuntimeException(e);
 				}
 
-				cooldownOff = true;
+				sendCoordCooldown = true;
 				//Parses the player coordinates into a string
 			}else {
 				player.sendMessage(Text.literal("§c Please wait 5 seconds after sharing coords again")); // Send a message for feedback
@@ -139,8 +144,35 @@ public class HitboxPlus implements ModInitializer {
 
 	private static void sendPing(){
 
+		if(!pingCooldownDisabled){
+			player.sendMessage(Text.literal("§cPing is in cooldown")); // Send a message for feedback
+			return;
+		}
 
+		BlockPos blockToPing = getBlockPosFromRaycast();
 
+		if (blockToPing == null){
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNo block found"), true );
+			return;
+		}
+
+		int x = blockToPing.getX();
+		int y = blockToPing.getY();
+		int z = blockToPing.getZ();
+
+		new Thread(() -> {
+
+				MinecraftClient.getInstance().getNetworkHandler().sendChatMessage("pinged location {" + x + "," + y + "," + z + "}");
+				pingCooldownDisabled = false;// make sure the cooldown is off
+
+				try {
+					TimeUnit.SECONDS.sleep(1);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+
+				pingCooldownDisabled = true;
+		}).start();
 	}
 
 	private static void calculateOreRatio(){
@@ -297,4 +329,35 @@ public class HitboxPlus implements ModInitializer {
 		}
 		return ""; //Return nothing
 	}
+
+	public static BlockPos getBlockPosFromRaycast() {
+		double maxDistance = 400;
+
+		MinecraftClient client = MinecraftClient.getInstance();
+		Entity cameraEntity = client.cameraEntity;
+		if (cameraEntity != null) {
+			// Get the player view position and rotation
+			Vec3d cameraPos = cameraEntity.getCameraPosVec(1.0f);
+			Vec3d rot = cameraEntity.getRotationVec(1.0f);
+			Vec3d rayEnd = cameraPos.add(rot.x * maxDistance, rot.y * maxDistance, rot.z * maxDistance);
+
+			// Perform the raycast
+			RaycastContext context = new RaycastContext(
+					cameraPos, rayEnd,
+					RaycastContext.ShapeType.OUTLINE,
+					RaycastContext.FluidHandling.NONE,
+					cameraEntity
+			);
+
+			BlockHitResult hitResult = cameraEntity.getWorld().raycast(context);
+
+			// Check if a block was hit and return its position
+			if (hitResult.getType() == HitResult.Type.BLOCK) {
+				return hitResult.getBlockPos();
+			}
+		}
+
+		return null; // Return null if no block is hit
+	}
+
 }

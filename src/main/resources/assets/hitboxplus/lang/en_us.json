@@ -141,9 +141,10 @@
   "text.autoconfig.hitboxplus.option.pingTowns.limitRange.@Tooltip": "Set an area within which waypoints can appear",
   "text.autoconfig.hitboxplus.option.specialTowns.showNotifications.@Tooltip": "Show a notification when a special towns chunk gets capped",
 
-  "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "§l Accept location Waypoints from friends",
-  "text.autoconfig.hitboxplus.option.friend.acceptPings": "§l Accept position pings from friends",
+  "text.autoconfig.hitboxplus.option.friend.acceptCoordsFromFriends": "§lAccept location Waypoints from friends",
+  "text.autoconfig.hitboxplus.option.friend.acceptPings": "§lAccept position pings from friends",
   "text.autoconfig.hitboxplus.option.friend.pingWaypointTimer": "Ping waypoint timer",
+  "text.autoconfig.hitboxplus.option.friend.deletePreviousPing": "Delete player waypoint after new one",
 
   "text.autoconfig.hitboxplus.option.enemy.acceptCoordsFromFriends": "OUT OF ORDER",
   "text.autoconfig.hitboxplus.option.enemy.areWaypointsTimed": "OUT OF ORDER",

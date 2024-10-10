@@ -1,5 +1,6 @@
 package io.github.pingisfun.hitboxplus.waypoints;
 
+import io.github.pingisfun.hitboxplus.HitboxPlusClient;
 import io.github.pingisfun.hitboxplus.ModConfig;
 import io.github.pingisfun.hitboxplus.util.ConfEnums;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -11,6 +12,7 @@ import xaero.common.minimap.waypoints.WaypointSet;
 import xaero.common.minimap.waypoints.WaypointsManager;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -85,9 +87,17 @@ public class WaypointUtils {
                 throw new RuntimeException(e);
             }
 
-            if (waypoint == null || getWaypointList() == null) return;
-            getWaypointList().remove(waypoint); // Delete the waypoint
+
+             deleteWaypoint(waypoint);// Delete the waypoint
         }).start();
+    }
+
+    public static void deleteWaypoint(Waypoint waypoint){
+        if (waypoint == null || getWaypointList() == null) return;
+
+        HitboxPlusClient.pings.values().removeIf(value -> value.equals(waypoint));
+
+        getWaypointList().remove(waypoint);
     }
 
 }

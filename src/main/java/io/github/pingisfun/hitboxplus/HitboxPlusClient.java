@@ -3,17 +3,22 @@ package io.github.pingisfun.hitboxplus;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsBrokenDetector;
 import io.github.pingisfun.hitboxplus.waypoints.FlagsPlacedDetector;
 import io.github.pingisfun.hitboxplus.waypoints.PlayerCoordSharing;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import xaero.common.minimap.waypoints.Waypoint;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.Math.abs;
 
 
 public class HitboxPlusClient implements ClientModInitializer {
 
+    public static HashMap<String, Waypoint> pings = new HashMap<>();
 
     @Override
     public void onInitializeClient() {
@@ -24,19 +29,14 @@ public class HitboxPlusClient implements ClientModInitializer {
                 return true;
             }
 
-            try {
 
-                FlagsPlacedDetector.checkForPlacedFlags(message.toString());
+            FlagsPlacedDetector.checkForPlacedFlags(message.toString());
 
-                FlagsBrokenDetector.handleFlags(message.toString());
+            FlagsBrokenDetector.handleFlags(message.toString());
 
-                PlayerCoordSharing.handleServerWaypoint(message.toString());
+            PlayerCoordSharing.handleServerWaypoint(message.toString());
 
-                return true;
-            } catch (Exception e) {
-                MinecraftClient.getInstance().player.sendMessage(Text.literal("Exception: " + e.getMessage()));
-                return false;
-            }
+            return PlayerCoordSharing.handleServerPing(message.toString());
 
         });
 
@@ -47,15 +47,11 @@ public class HitboxPlusClient implements ClientModInitializer {
                 return true;
             }
 
-            try {
-                PlayerCoordSharing.handlePlayerWaypoint(message.toString(),sender);
-                return true;
 
-            } catch (Exception e){
-                MinecraftClient.getInstance().player.sendMessage(Text.literal("Exception: " + e.getMessage()));
+            PlayerCoordSharing.handlePlayerWaypoint(message.toString(), sender);
 
-                return false;
-            }
+            return PlayerCoordSharing.handlePlayerPing(message.toString(), sender);
+
         });
     }
 }

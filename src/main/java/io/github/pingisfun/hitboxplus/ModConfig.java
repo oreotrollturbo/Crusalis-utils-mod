@@ -199,6 +199,7 @@ public class ModConfig implements ConfigData {
         public int friendWaypointTimer = 40; //Add the setting to accept coordinates from teammates
 
         public boolean acceptPings = true;
+        public boolean deletePreviousPing = true;
 
         public int pingWaypointTimer = 3;
 
