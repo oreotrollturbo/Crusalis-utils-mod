@@ -35,7 +35,7 @@ public class HitboxPlus implements ModInitializer {
 	public static final String MOD_ID = "hitboxplus";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	private boolean cooldownOff = true;
+	private static boolean cooldownOff = true;
 
 
 	@Override
@@ -64,10 +64,10 @@ public class HitboxPlus implements ModInitializer {
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("The_answer_to_life_the_universe_and_everything")
 				.executes(context -> { // This is just a meme command
-							context.getSource().sendFeedback(Text.literal("42"));
-							return 1;
-						}
-				)));
+					context.getSource().sendFeedback(Text.literal("42"));
+					return 1;
+				}
+		)));
 
 
 
@@ -79,33 +79,7 @@ public class HitboxPlus implements ModInitializer {
 			}
 
 			if (sendCoords.wasPressed()){ // When the send coords button is pressed
-				MinecraftClient mcClient = MinecraftClient.getInstance();
-				int x = (int) MinecraftClient.getInstance().player.getX();
-				int y = (int) MinecraftClient.getInstance().player.getY(); // Get the players coordinates
-				int z = (int) MinecraftClient.getInstance().player.getZ();
-
-
-				new Thread(() -> {
-					// Make a thread with a timer to auto delete the waypoint
-
-					if(cooldownOff){
-						client.getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
-						cooldownOff = false;// make sure the cooldown is off
-
-						try {
-							TimeUnit.SECONDS.sleep(5); //Coldown is set to a minute
-						} catch (InterruptedException e) {
-							throw new RuntimeException(e);
-						}
-
-						cooldownOff = true;
-						//Parses the player coordinates into a string
-					}else {
-						player.sendMessage(Text.literal("§c Please wait 5 seconds after sharing coords again")); // Send a message for feedback
-                    }
-
-				}).start();
-
+				sendCoordsInChat();
             }
 
 			if (sendPing.wasPressed()){
@@ -115,46 +89,7 @@ public class HitboxPlus implements ModInitializer {
 			}
 
 			if (calculateOreBind.isPressed()) { //When the oreBind is pressed
-
-				int totalDiamondAmmount = 0;
-				int totalIronAmmount = 0; // Defining the "ore counters"
-				int totalStoneAmmount = 0;
-
-				for (int i = 0; 35 >= i; i++) { //Loops 35 times because the player has 35 inventory slots (excluding offhand and armor)
-
-					ItemStack inventorySlot = MinecraftClient.getInstance().player.getInventory().getStack(i); //Get the players inventory
-
-
-					if (inventorySlot.isOf(Items.DIAMOND_ORE) ){
-						totalDiamondAmmount = totalIronAmmount + inventorySlot.getCount(); //If it finds a diamond stack it adds it to the counter
-					}else if (inventorySlot.isOf(Items.IRON_ORE)) {
-						totalIronAmmount = totalIronAmmount + inventorySlot.getCount();
-					}else if (inventorySlot.isOf(Items.COBBLESTONE) || inventorySlot.isOf(Items.ANDESITE) || inventorySlot.isOf(Items.DIORITE) || inventorySlot.isOf(Items.SANDSTONE)){
-						totalStoneAmmount = totalStoneAmmount + inventorySlot.getCount(); //The stone ammount also counts andesite diorite and sandstone aswell
-					}
-				}
-
-
-				if (totalDiamondAmmount != 0 ||  totalStoneAmmount != 0){ // Making sure there is something to avoid exceptions
-					double stoneDiamond = (double) totalDiamondAmmount / totalStoneAmmount;
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + stoneDiamond + " diamonds per stone")); //calculate and tell the player his rates
-				} else {
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no stone or no diamonds in your inventory")); //No ores found
-				}
-
-				if (totalStoneAmmount != 0 ||  totalIronAmmount != 0){ // Making sure there is something to avoid exceptions
-					double stoneIron = (double) totalIronAmmount/totalStoneAmmount;
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + stoneIron + " iron ore per stone")); //calculate and tell the player his rates
-				} else {
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no stone or no iron ore in your inventory"));//No ores found
-				}
-
-				if (totalStoneAmmount != 0 ||  totalIronAmmount != 0){ // Making sure there is something to avoid exceptions
-					double diamondIron = (double) totalDiamondAmmount/totalIronAmmount;
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + diamondIron + " diamonds per iron ore")); //calculate and tell the player his rates
-				} else {
-					MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no iron ore or no diamonds in your inventory"));//No ores found
-				}
+				calculateOreRatio();
 			}
 
 
@@ -173,7 +108,82 @@ public class HitboxPlus implements ModInitializer {
 
 	}
 
-	public static void displayCustomMessage(String text) { //This function isnt very used might delete
+	public static void sendCoordsInChat(){
+
+		MinecraftClient mcClient = MinecraftClient.getInstance();
+		int x = (int) MinecraftClient.getInstance().player.getX();
+		int y = (int) MinecraftClient.getInstance().player.getY(); // Get the players coordinates
+		int z = (int) MinecraftClient.getInstance().player.getZ();
+
+
+		new Thread(() -> {
+			// Make a thread with a timer to auto delete the waypoint
+
+			if(cooldownOff){
+				MinecraftClient.getInstance().getNetworkHandler().sendChatMessage("my coords (" + x + "," + y + "," + z + ")");
+				cooldownOff = false;// make sure the cooldown is off
+
+				try {
+					TimeUnit.SECONDS.sleep(5); //Coldown is set to a minute
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+
+				cooldownOff = true;
+				//Parses the player coordinates into a string
+			}else {
+				player.sendMessage(Text.literal("§c Please wait 5 seconds after sharing coords again")); // Send a message for feedback
+			}
+
+		}).start();
+
+	}
+
+	private static void calculateOreRatio(){
+
+		int totalDiamondAmmount = 0;
+		int totalIronAmmount = 0; // Defining the "ore counters"
+		int totalStoneAmmount = 0;
+
+		for (int i = 0; 35 >= i; i++) { //Loops 35 times because the player has 35 inventory slots (excluding offhand and armor)
+
+			ItemStack inventorySlot = MinecraftClient.getInstance().player.getInventory().getStack(i); //Get the players inventory
+
+
+			if (inventorySlot.isOf(Items.DIAMOND_ORE) ){
+				totalDiamondAmmount = totalIronAmmount + inventorySlot.getCount(); //If it finds a diamond stack it adds it to the counter
+			}else if (inventorySlot.isOf(Items.IRON_ORE)) {
+				totalIronAmmount = totalIronAmmount + inventorySlot.getCount();
+			}else if (inventorySlot.isOf(Items.COBBLESTONE) || inventorySlot.isOf(Items.ANDESITE) || inventorySlot.isOf(Items.DIORITE) || inventorySlot.isOf(Items.SANDSTONE)){
+				totalStoneAmmount = totalStoneAmmount + inventorySlot.getCount(); //The stone ammount also counts andesite diorite and sandstone aswell
+			}
+		}
+
+
+		if (totalDiamondAmmount != 0 ||  totalStoneAmmount != 0){ // Making sure there is something to avoid exceptions
+			double stoneDiamond = (double) totalDiamondAmmount / totalStoneAmmount;
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + stoneDiamond + " diamonds per stone")); //calculate and tell the player his rates
+		} else {
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no stone or no diamonds in your inventory")); //No ores found
+		}
+
+		if (totalStoneAmmount != 0 ||  totalIronAmmount != 0){ // Making sure there is something to avoid exceptions
+			double stoneIron = (double) totalIronAmmount/totalStoneAmmount;
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + stoneIron + " iron ore per stone")); //calculate and tell the player his rates
+		} else {
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no stone or no iron ore in your inventory"));//No ores found
+		}
+
+		if (totalStoneAmmount != 0 ||  totalIronAmmount != 0){ // Making sure there is something to avoid exceptions
+			double diamondIron = (double) totalDiamondAmmount/totalIronAmmount;
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("You get " + diamondIron + " diamonds per iron ore")); //calculate and tell the player his rates
+		} else {
+			MinecraftClient.getInstance().player.sendMessage(Text.literal("You have no iron ore or no diamonds in your inventory"));//No ores found
+		}
+
+	}
+
+	private static void displayCustomMessage(String text) { //This function isnt very used might delete
 		// Send your custom message to the client chat.
 		if (MinecraftClient.getInstance().player != null) {
 			MinecraftClient.getInstance().player.sendMessage(Text.literal(text));
