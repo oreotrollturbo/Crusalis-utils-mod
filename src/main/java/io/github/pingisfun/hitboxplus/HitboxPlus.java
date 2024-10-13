@@ -1,6 +1,7 @@
 package io.github.pingisfun.hitboxplus;
 
 import io.github.pingisfun.hitboxplus.commands.Register;
+import io.github.pingisfun.hitboxplus.waypoints.PlayerCoordSharing;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -164,6 +165,8 @@ public class HitboxPlus implements ModInitializer {
 
 				MinecraftClient.getInstance().getNetworkHandler().sendChatMessage("pinged location {" + x + "," + y + "," + z + "}");
 				pingCooldownDisabled = false;// make sure the cooldown is off
+
+				PlayerCoordSharing.makePlayerPing(x,y,z , "your"); //Make the ping show up for yourself
 
 				try {
 					TimeUnit.SECONDS.sleep(1);

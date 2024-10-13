@@ -158,7 +158,7 @@ public class PlayerCoordSharing {
         }
     }
 
-    private static void makePlayerPing(int x, int y, int z , String nick){
+    public static void makePlayerPing(int x, int y, int z , String nick){
 
         if (getWaypointList() == null) {
             MinecraftClient.getInstance().player.sendMessage(Text.literal("Waypoints are null"));
